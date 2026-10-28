@@ -1,4 +1,5 @@
 import React, { CSSProperties } from "react";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/ThemeContext";
 
 export interface ModelFilters {
@@ -21,6 +22,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
   styles,
 }) => {
   const { colors } = useTheme();
+  const { t } = useTranslation("leaderboard");
 
   const handleFilterChange = (key: keyof ModelFilters, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -101,12 +103,12 @@ export const ModelFilterPanel: React.FC<Props> = ({
         letterSpacing: "0.02em",
         textTransform: "uppercase",
       }}>
-        Filter Models
+        {t("filters.title")}
       </h3>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px" }}>
         <div style={filterGroupStyle}>
-          <label style={labelStyle}>CEFR Level</label>
+          <label style={labelStyle}>{t("filters.cefrLevel")}</label>
           <select
             style={selectStyle}
             value={filters.cefrLevel}
@@ -114,7 +116,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
             onFocus={(e) => e.currentTarget.style.borderColor = colors.accent}
             onBlur={(e) => e.currentTarget.style.borderColor = colors.border}
           >
-            <option value="All">All</option>
+            <option value="All">{t("filters.all")}</option>
             <option value="A1">A1</option>
             <option value="A2">A2</option>
             <option value="B1">B1</option>
@@ -125,7 +127,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
         </div>
 
         <div style={filterGroupStyle}>
-          <label style={labelStyle}>Test Category</label>
+          <label style={labelStyle}>{t("filters.testCategory")}</label>
           <select
             style={selectStyle}
             value={filters.testCategory}
@@ -133,17 +135,17 @@ export const ModelFilterPanel: React.FC<Props> = ({
             onFocus={(e) => e.currentTarget.style.borderColor = colors.accent}
             onBlur={(e) => e.currentTarget.style.borderColor = colors.border}
           >
-            <option value="All">All</option>
-            <option value="Vocab">Vocabulary</option>
-            <option value="Grammar">Grammar</option>
-            <option value="RC">Reading Comprehension</option>
-            <option value="LC">Listening Comprehension</option>
-            <option value="Total">Total</option>
+            <option value="All">{t("filters.all")}</option>
+            <option value="Vocab">{t("filters.vocabulary")}</option>
+            <option value="Grammar">{t("filters.grammar")}</option>
+            <option value="RC">{t("filters.readingComprehension")}</option>
+            <option value="LC">{t("filters.listeningComprehension")}</option>
+            <option value="Total">{t("filters.total")}</option>
           </select>
         </div>
 
         <div style={filterGroupStyle}>
-          <label style={labelStyle}>Model Type</label>
+          <label style={labelStyle}>{t("filters.modelType")}</label>
           <select
             style={selectStyle}
             value={filters.licensingType}
@@ -151,16 +153,16 @@ export const ModelFilterPanel: React.FC<Props> = ({
             onFocus={(e) => e.currentTarget.style.borderColor = colors.accent}
             onBlur={(e) => e.currentTarget.style.borderColor = colors.border}
           >
-            <option value="All">All</option>
-            <option value="Open_Source">Open Source</option>
-            <option value="Proprietary">Proprietary (Closed)</option>
+            <option value="All">{t("filters.all")}</option>
+            <option value="Open_Source">{t("filters.openSource")}</option>
+            <option value="Proprietary">{t("filters.proprietary")}</option>
           </select>
         </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px", marginTop: "24px" }}>
         <div style={filterGroupStyle}>
-          <label style={labelStyle}>LLM Size Range (Billion Parameters)</label>
+          <label style={labelStyle}>{t("filters.sizeRange")}</label>
           <div style={sliderContainerStyle}>
             <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
               <input
@@ -176,7 +178,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
                 onBlur={(e) => e.currentTarget.style.borderColor = colors.border}
                 style={{ ...selectStyle, width: "90px" }}
               />
-              <span style={{ color: colors.textMuted, fontWeight: 600 }}>to</span>
+              <span style={{ color: colors.textMuted, fontWeight: 600 }}>{t("filters.to")}</span>
               <input
                 type="number"
                 min="0"
@@ -190,7 +192,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
                 onBlur={(e) => e.currentTarget.style.borderColor = colors.border}
                 style={{ ...selectStyle, width: "90px" }}
               />
-              <span style={{ color: colors.textMuted, fontWeight: 600 }}>B</span>
+              <span style={{ color: colors.textMuted, fontWeight: 600 }}>{t("filters.billion")}</span>
             </div>
             <input
               type="range"
@@ -219,7 +221,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
 
         <div style={filterGroupStyle}>
           <label style={labelStyle}>
-            Minimum Performance: {filters.minPerformance}%
+            {t("filters.minPerformance", { value: filters.minPerformance })}
           </label>
           <div style={sliderContainerStyle}>
             <input
@@ -235,7 +237,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
               }}
             />
             <div style={rangeDisplayStyle}>
-              Show LLMs with minimum {filters.minPerformance}% performance
+              {t("filters.showMinPerf", { value: filters.minPerformance })}
             </div>
           </div>
         </div>
@@ -271,7 +273,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
             e.currentTarget.style.borderColor = colors.borderStrong;
           }}
         >
-          Reset Filters
+          {t("filters.resetFilters")}
         </button>
       </div>
     </div>
