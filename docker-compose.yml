@@ -7,12 +7,15 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_URL: http://localhost:8000
+        VITE_AGENT_URL: ws://localhost:8765
     ports:
       - "3000:3000"
     depends_on:
       - backend
+      - agent
     environment:
       - VITE_API_URL=http://localhost:8000
+      - VITE_AGENT_URL=ws://localhost:8765
 
   backend:
     build:
@@ -24,3 +27,14 @@ services:
       - DATABASE_URL=sqlite:///./data/AI_Sandbox.db
     volumes:
       - ./backend/data:/app/data
+
+  agent:
+    build:
+      context: ./agent
+      dockerfile: Dockerfile
+    ports:
+      - "8765:8765"
+    environment:
+      - LETZEVAL_DB_PATH=/app/data/AI_Sandbox.db
+    volumes:
+      - ./backend/data:/app/data:ro

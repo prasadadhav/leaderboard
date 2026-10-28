@@ -1,6 +1,7 @@
 import React from "react";
 import { TableBlock } from "../components/runtime/TableBlock";
 import { ModelMetricsBarChart } from "../components/charts/ModelMetricsBarChart";
+import { AgentComponent } from "../components/AgentComponent";
 import { useTheme } from "../contexts/ThemeContext";
 
 const Home: React.FC = () => {
@@ -258,6 +259,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </footer>
+      <AgentComponent />
     </div>
   );
 };

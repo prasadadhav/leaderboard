@@ -1,0 +1,427 @@
+2026-10-28 15:41:03,854 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:04,911 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:04,913 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:04,929 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:04,932 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:04,935 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:13,791 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:14,743 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:14,746 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:14,767 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:14,771 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:14,773 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:41:17,135 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:41:17,476 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:41:17,485 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:42:08,814 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:42:08,816 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:42:19,817 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:42:20,701 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:42:20,704 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:42:20,721 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:42:20,723 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:42:20,726 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:42:22,040 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:42:22,264 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:42:22,266 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:43:17,432 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:43:17,434 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:43:24,114 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:24,969 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:24,973 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:24,987 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:24,991 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:24,995 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:32,954 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:33,856 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:33,858 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:33,873 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:33,876 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:33,878 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:43:35,204 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:43:35,402 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:43:35,403 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:44:26,991 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:44:26,992 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:44:41,533 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:44:42,403 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:44:42,406 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:44:42,421 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:44:42,424 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:44:42,428 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:44:43,712 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:44:43,908 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:44:43,909 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:45:36,930 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:45:36,931 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:45:43,599 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:45:44,534 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:45:44,536 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:45:44,552 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:45:44,555 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:45:44,559 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:45:45,896 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:45:46,110 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:45:46,112 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:46:50,573 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:46:50,575 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:46:58,760 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:46:59,803 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:46:59,808 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:46:59,828 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:46:59,832 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:46:59,837 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:47:01,564 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:47:01,859 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:47:01,860 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:48:02,972 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:48:02,975 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:48:20,219 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:48:21,169 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:48:21,172 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:48:21,189 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:48:21,191 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:48:21,194 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:48:22,838 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:48:23,071 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:48:23,072 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:49:46,204 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:49:46,205 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:50:14,232 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:50:15,134 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:50:15,136 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:50:15,151 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:50:15,154 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:50:15,156 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:50:16,425 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:50:16,650 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:50:16,651 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:51:36,863 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:51:36,865 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:52:07,061 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:52:07,929 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:52:07,932 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:52:07,947 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:52:07,949 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:52:07,951 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:52:09,339 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:52:09,531 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:52:09,533 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:53:22,420 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:53:22,421 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:55:13,119 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:55:13,992 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:55:13,995 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:55:14,009 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:55:14,011 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:55:14,014 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:55:15,319 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:55:15,497 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:55:15,500 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:56:26,079 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:56:26,080 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 15:58:00,522 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:58:01,353 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:58:01,356 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:58:01,369 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:58:01,372 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:58:01,374 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 15:58:02,646 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 15:58:02,839 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 15:58:02,841 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 15:59:19,210 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 15:59:19,212 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:00:14,653 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:00:15,530 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:00:15,534 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:00:15,547 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:00:15,549 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:00:15,551 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:00:16,788 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:00:16,983 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:00:16,985 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:01:25,448 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:01:25,451 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:02:17,387 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:02:18,256 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:02:18,258 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:02:18,273 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:02:18,275 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:02:18,278 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:02:19,526 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:02:19,723 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:02:19,725 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:03:39,628 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:03:39,629 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:03:55,582 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:03:56,531 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:03:56,535 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:03:56,550 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:03:56,552 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:03:56,554 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:03:57,942 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:03:58,131 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:03:58,132 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:05:08,390 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:05:08,391 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:05:33,672 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:05:34,476 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:05:34,479 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:05:34,492 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:05:34,495 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:05:34,497 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:05:35,657 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:05:35,846 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:05:35,847 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:06:41,077 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:06:41,079 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:07:09,899 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:07:10,751 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:07:10,754 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:07:10,766 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:07:10,769 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:07:10,771 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:07:11,972 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:07:12,157 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:07:12,160 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:08:21,873 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:08:21,874 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:08:46,915 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:08:47,798 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:08:47,803 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:08:47,818 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:08:47,821 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:08:47,824 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:08:49,070 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:08:49,263 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:08:49,265 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:10:06,580 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:10:06,583 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:10:31,421 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:10:32,446 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:10:32,449 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:10:32,467 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:10:32,469 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:10:32,471 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:10:34,069 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:10:34,270 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:10:34,274 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:11:50,484 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:11:50,485 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:11:50,532 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:11:50,533 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:13:27,921 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:13:27,923 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:13:27,976 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:13:27,977 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:15:13,971 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:15:13,972 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 16:15:14,366 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:15:15,567 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:15:15,569 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:15:15,583 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:15:15,586 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:15:15,587 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:15:17,088 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:15:17,269 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:15:17,271 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:56:54,945 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:56:56,100 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:56:56,103 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:56:56,132 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:56:56,135 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:56:56,137 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 16:56:57,806 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 16:56:58,002 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 16:56:58,004 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 16:58:06,056 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 16:58:06,058 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:00:06,134 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:00:06,965 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:00:06,969 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:00:06,985 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:00:06,988 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:00:06,992 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:00:08,451 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:00:08,644 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:00:08,646 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:01:25,718 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:01:25,719 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:01:46,661 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:01:47,503 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:01:47,506 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:01:47,521 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:01:47,523 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:01:47,526 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:01:48,759 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:01:48,949 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:01:48,951 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:03:04,137 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:03:04,138 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:03:14,197 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:03:15,118 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:03:15,122 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:03:15,137 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:03:15,141 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:03:15,144 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:03:16,418 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:03:16,609 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:03:16,611 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:04:27,451 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:04:27,456 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:04:30,458 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:04:31,308 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:04:31,312 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:04:31,327 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:04:31,330 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:04:31,334 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:04:32,561 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:04:32,759 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:04:32,761 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:06:05,534 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:06:06,341 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:06:06,345 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:06:06,360 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:06:06,364 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:06:06,367 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:06:07,795 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:06:07,855 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:06:07,857 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:07:16,186 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:07:16,188 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:07:16,309 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:07:16,311 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:08:25,380 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:08:25,382 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:08:25,470 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:08:25,472 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:08:38,109 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:08:39,107 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:08:39,108 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:08:39,121 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:08:39,123 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:08:39,125 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:08:40,918 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:08:41,181 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:08:41,183 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:10:51,326 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:10:52,162 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:10:52,164 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:10:52,177 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:10:52,180 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:10:52,183 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:10:53,431 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:10:53,626 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:10:53,628 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:11:58,044 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:11:58,045 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:12:46,004 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:12:46,900 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:12:46,903 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:12:46,918 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:12:46,922 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:12:46,925 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:12:48,653 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:12:48,955 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:12:48,958 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:13:54,322 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:13:54,323 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:14:02,515 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:14:03,374 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:14:03,377 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:14:03,390 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:14:03,393 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:14:03,396 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:14:04,672 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:14:04,868 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:14:04,869 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:15:11,640 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:15:11,641 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:15:52,702 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:15:53,565 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:15:53,567 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:15:53,580 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:15:53,582 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:15:53,584 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:15:54,885 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:15:55,081 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:15:55,083 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:17:14,823 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:17:14,825 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:17:53,360 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:17:54,799 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:17:54,857 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:17:54,930 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:17:55,061 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:17:55,075 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:17:57,271 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:17:57,471 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:17:57,473 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:19:40,374 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:19:40,375 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:19:48,297 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:19:49,173 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:19:49,176 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:19:49,189 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:19:49,192 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:19:49,194 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:19:50,594 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:19:50,876 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:19:50,878 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:21:31,155 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:21:31,157 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:21:53,031 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:21:53,853 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:21:53,855 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:21:53,868 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:21:53,870 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:21:53,872 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:21:55,121 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:21:55,314 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:21:55,316 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:23:04,244 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:23:04,245 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:23:11,989 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:23:12,925 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:23:12,927 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:23:12,940 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:23:12,942 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:23:12,945 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:23:14,149 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:23:14,351 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:23:14,363 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:24:34,135 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:24:34,136 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:25:04,707 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:25:05,550 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:25:05,554 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:25:05,567 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:25:05,571 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:25:05,573 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:25:06,993 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:25:07,201 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:25:07,203 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:26:28,207 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:26:28,209 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:27:26,810 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:27:27,646 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:27:27,649 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:27:27,662 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:27:27,666 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:27:27,669 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:27:28,881 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:27:29,062 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:27:29,063 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:28:40,662 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:28:40,663 - BESSER Agentic Framework - INFO - letzeval_assistant training finished
+2026-10-28 17:28:52,437 - BESSER Agentic Framework - WARNING - langchain dependencies in RAG could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:28:53,319 - BESSER Agentic Framework - WARNING - cv2 dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:28:53,322 - BESSER Agentic Framework - WARNING - plotly dependencies in websocket_callbacks.py could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:28:53,337 - BESSER Agentic Framework - WARNING - cv2 dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:28:53,341 - BESSER Agentic Framework - WARNING - plotly dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:28:53,344 - BESSER Agentic Framework - WARNING - librosa dependencies in WebSocketPlatform could not be imported. You can install them from the requirements/requirements-extras.txt file
+2026-10-28 17:28:54,693 - BESSER Agentic Framework - INFO - Stemmer added: english
+2026-10-28 17:28:54,896 - BESSER Agentic Framework - INFO - letzeval_assistant training started
+2026-10-28 17:28:54,898 - BESSER Agentic Framework - INFO - NER successfully trained.
+2026-10-28 17:30:11,084 - BESSER Agentic Framework - INFO - Intent classifier in initial_state successfully trained.
+2026-10-28 17:30:11,086 - BESSER Agentic Framework - INFO - letzeval_assistant training finished

@@ -99,6 +99,50 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     fetchData();
   }, []);
 
+  // Listen for filter events dispatched by the agent chat
+  useEffect(() => {
+    const onApplyFilters = (e: Event) => {
+      const incoming = (e as CustomEvent).detail as Partial<ModelFilters>;
+      setFilters((prev) => ({ ...prev, ...incoming }));
+    };
+    const defaultFilters: ModelFilters = {
+      cefrLevel: "All",
+      testCategory: "All",
+      licensingType: "All",
+      sizeRange: [0, 1000],
+      minPerformance: 40,
+      maxModels: 20,
+    };
+    const onResetFilters = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { fields?: string[] } | undefined;
+      if (detail?.fields?.length) {
+        const partial: Partial<ModelFilters> = {};
+        for (const f of detail.fields) {
+          if (f in defaultFilters) {
+            (partial as Record<string, unknown>)[f] =
+              defaultFilters[f as keyof ModelFilters];
+          }
+        }
+        setFilters((prev) => ({ ...prev, ...partial }));
+      } else {
+        setFilters(defaultFilters);
+        setPlotMode("simple");
+      }
+    };
+    window.addEventListener("letzeval:apply_filters", onApplyFilters);
+    window.addEventListener("letzeval:reset_filters", onResetFilters);
+    return () => {
+      window.removeEventListener("letzeval:apply_filters", onApplyFilters);
+      window.removeEventListener("letzeval:reset_filters", onResetFilters);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (filters.cefrLevel !== "All" || filters.testCategory !== "All") {
+      setPlotMode("detailed");
+    }
+  }, [filters.cefrLevel, filters.testCategory]);
+
   useEffect(() => {
     if (!allData || allData.length === 0) {
       setFilteredData([]);
