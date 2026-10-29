@@ -11,7 +11,9 @@ import {
   YAxis,
 } from "recharts";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import { ModelFilterPanel, ModelFilters } from "./ModelFilterPanel";
+import { getSampleCount } from "../../data/sampleCounts";
 import { useTheme } from "../../contexts/ThemeContext";
 
 interface ModelMetric {
@@ -58,12 +60,14 @@ const cefrBaselines: Record<string, number> = {
 
 export const ModelMetricsBarChart: React.FC<Props> = ({
   id,
-  title = "Model Performance Metrics",
+  title,
   styles,
   maxModels = 15,
 }) => {
   const { colors, theme } = useTheme();
+  const { t } = useTranslation("leaderboard");
   const isDark = theme === "dark";
+  const resolvedTitle = title ?? t("chart.title");
 
   const [plotMode, setPlotMode] = useState<"simple" | "detailed">("simple");
   const [allData, setAllData] = useState<ModelMetric[]>([]);
@@ -198,7 +202,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     return (
       <div id={id} style={containerStyle}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>
-          <p style={{ color: colors.textMuted }}>Loading metrics...</p>
+          <p style={{ color: colors.textMuted }}>{t("chart.loading")}</p>
         </div>
       </div>
     );
@@ -208,7 +212,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     return (
       <div id={id} style={containerStyle}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>
-          <p style={{ color: "#ef4444" }}>{error}</p>
+          <p style={{ color: "#ef4444" }}>{t("chart.error")}</p>
         </div>
       </div>
     );
@@ -224,16 +228,34 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
   const metricNameSuffix =
     filters.testCategory === "All" || filters.testCategory === "Total"
-      ? "Total"
+      ? t("chart.metricNames.total")
       : filters.testCategory === "Vocab"
-        ? "Vocabulary"
+        ? t("chart.metricNames.vocabulary")
         : filters.testCategory === "RC"
-          ? "Reading Comprehension"
+          ? t("chart.metricNames.readingComprehension")
           : filters.testCategory === "LC"
-            ? "Listening Comprehension"
-            : "Grammar";
+            ? t("chart.metricNames.listeningComprehension")
+            : t("chart.metricNames.grammar");
 
   const getMetricLabel = (level: string) => `${level} ${metricNameSuffix}`;
+
+  // Sample count for the current filter selection.
+  // Simple mode always reflects the full 629-question evaluation (macro avg denominator).
+  // Detailed mode reflects the filtered subset defined by the active CEFR + category filters.
+  const activeSampleCount =
+    plotMode === "simple"
+      ? 629
+      : getSampleCount(filters.cefrLevel, filters.testCategory);
+
+  // Only append (n=X) when a filter is active (not both All) or in simple mode.
+  // In simple mode we always show it since macro avg has a defined n.
+  const showSampleCount =
+    plotMode === "simple" ||
+    filters.cefrLevel !== "All" ||
+    filters.testCategory !== "All";
+
+  const xAxisTickFormatter = (name: string) =>
+    showSampleCount ? `${name} (n=${activeSampleCount})` : name;
 
   return (
     <div id={id} style={containerStyle}>
@@ -253,7 +275,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
       <div style={chartContainerStyle}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
-          {title ? (
+          {resolvedTitle ? (
             <h3 style={{
               margin: 0,
               fontSize: "1.25rem",
@@ -261,14 +283,14 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
               color: colors.textPrimary,
               letterSpacing: "-0.01em",
             }}>
-              {title}
+              {resolvedTitle}
               <span style={{
                 fontSize: "0.875rem",
                 fontWeight: 400,
                 color: colors.textMuted,
                 marginLeft: "10px"
               }}>
-                ({filteredData.length} models)
+                ({t("chart.modelsCount", { count: filteredData.length })})
               </span>
             </h3>
           ) : <span />}
@@ -298,7 +320,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
                   textTransform: "capitalize",
                 }}
               >
-                {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                {t(`chart.plotMode.${mode}`)}
               </button>
             ))}
           </div>
@@ -306,7 +328,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
         {filteredData.length === 0 ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80%" }}>
-            <p style={{ color: colors.textMuted }}>No models match the selected filters</p>
+            <p style={{ color: colors.textMuted }}>{t("chart.noModels")}</p>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="90%">
@@ -323,9 +345,10 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
                 interval={0}
                 tick={{ fontSize: 11, fill: colors.chartAxis }}
                 stroke={colors.chartAxis}
+                tickFormatter={xAxisTickFormatter}
               />
               <YAxis
-                label={{ value: "Score", angle: -90, position: "insideLeft", style: { fill: colors.chartAxis } }}
+                label={{ value: t("chart.score"), angle: -90, position: "insideLeft", style: { fill: colors.chartAxis } }}
                 tick={{ fill: colors.chartAxis }}
                 stroke={colors.chartAxis}
               />

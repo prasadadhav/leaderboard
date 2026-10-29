@@ -1,0 +1,66 @@
+{
+  "hero": {
+    "title": "DANS QUELLE MESURE LES LLM COMPRENNENT-ILS LE LUXEMBOURGEOIS ?"
+  },
+  "intro": {
+    "paragraph1": "Les grands modèles de langue (LLM) ont transformé le paysage de l'IA ces dernières années. Ils sont devenus omniprésents et sont utilisés aussi bien par des particuliers que par des entreprises. Cependant, les LLM sont principalement développés pour des langues très répandues telles que l'anglais, l'espagnol ou l'allemand, laissant de côté des langues comme le luxembourgeois.",
+    "paragraph2": "Dans ce projet, nous avons cherché à tester les capacités linguistiques des LLM en luxembourgeois. En collaboration avec l'Institut National des Langues Luxembourg, nous avons utilisé des examens de maîtrise linguistique pour évaluer les performances de 45 LLM actuels."
+  },
+  "howItWorks": {
+    "title": "Comment ça fonctionne ?",
+    "body": "À l'aide d'examens de langue officiels conçus par des experts de l'INLL, nous testons systématiquement les LLM en leur faisant résoudre chaque question et en évaluant leurs performances globales. Il y a au total 629 questions à choix multiples, chacune appartenant à l'une des quatre grandes catégories (Vocabulaire, Grammaire, Compréhension écrite, Compréhension orale) et à un niveau CEFR (A1, A2, B1, B2, C1, C2). Les performances des LLM pour chaque catégorie et niveau CEFR sont exprimées en pourcentage de questions correctement répondues.",
+    "paperSentence": "Pour plus de détails sur la méthodologie d'évaluation, consultez l'",
+    "paperLinkText": "article de recherche"
+  },
+  "howToUse": {
+    "title": "Comment utiliser ce classement ?",
+    "paragraph1": "Ci-dessous, vous trouverez le panneau de contrôle pour filtrer le classement. Vous pouvez sélectionner un niveau CEFR et une catégorie pour filtrer le tableau en conséquence. De plus, vous pouvez choisir d'afficher uniquement les modèles open source ou propriétaires, sélectionner une famille de modèles de langue spécifique (par exemple, uniquement les modèles Llama), sélectionner une plage de taille de paramètres LLM, ou afficher les modèles ayant correctement répondu à un pourcentage donné de questions. Pour faciliter la lecture, les modèles les plus performants sont surlignés en vert.",
+    "paragraph2": "En dessous du tableau, vous trouverez un graphique à barres montrant les performances des LLM pour chaque catégorie et niveau CEFR, afin de faciliter la comparaison des performances des LLM."
+  },
+  "table": {
+    "title": "Classement des modèles"
+  },
+  "chart": {
+    "title": "Comparaison des performances des modèles",
+    "defaultTitle": "Métriques de performance des modèles",
+    "loading": "Chargement des métriques...",
+    "error": "Échec du chargement des métriques des modèles",
+    "noModels": "Aucun modèle ne correspond aux filtres sélectionnés",
+    "score": "Score",
+    "modelsCount": "{{count}} modèles",
+    "plotMode": {
+      "simple": "Simple",
+      "detailed": "Détaillé"
+    },
+    "metricNames": {
+      "total": "Total",
+      "vocabulary": "Vocabulaire",
+      "readingComprehension": "Compréhension écrite",
+      "listeningComprehension": "Compréhension orale",
+      "grammar": "Grammaire"
+    }
+  },
+  "filters": {
+    "title": "Filtrer les modèles",
+    "cefrLevel": "Niveau CEFR",
+    "testCategory": "Catégorie de test",
+    "modelType": "Type de modèle",
+    "sizeRange": "Plage de taille LLM (milliards de paramètres)",
+    "minPerformance": "Performance minimale : {{value}}%",
+    "showMinPerf": "Afficher les LLM avec une performance minimale de {{value}}%",
+    "resetFilters": "Réinitialiser les filtres",
+    "all": "Tous",
+    "vocabulary": "Vocabulaire",
+    "grammar": "Grammaire",
+    "readingComprehension": "Compréhension écrite",
+    "listeningComprehension": "Compréhension orale",
+    "total": "Total",
+    "openSource": "Open Source",
+    "proprietary": "Propriétaire (Fermé)",
+    "to": "à",
+    "billion": "Md",
+    "modelsShown": "Modèles affichés : {{value}}",
+    "models": "modèles",
+    "showTopModels": "Afficher les {{value}} meilleur(s) modèle(s)"
+  }
+}

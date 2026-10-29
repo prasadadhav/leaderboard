@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 interface ColumnSortProps {
   column: {
@@ -11,6 +12,7 @@ interface ColumnSortProps {
 }
 
 export const ColumnSort: React.FC<ColumnSortProps> = ({ column, currentSort, onSortChange }) => {
+  const { t } = useTranslation("common");
   const isActive = currentSort?.field === column.field;
   const direction = currentSort?.direction || "asc";
 
@@ -31,7 +33,7 @@ export const ColumnSort: React.FC<ColumnSortProps> = ({ column, currentSort, onS
         display: "inline-flex",
         alignItems: "center",
       }}
-      title={`Sort ${isActive && direction === "asc" ? "descending" : "ascending"}`}
+      title={isActive && direction === "asc" ? t("sort.descending") : t("sort.ascending")}
     >
       {!isActive && "⇅"}
       {isActive && direction === "asc" && "↑"}
