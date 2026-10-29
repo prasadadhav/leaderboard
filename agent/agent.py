@@ -30,6 +30,7 @@ from db.safe_db import (
     get_coverage_stats,
     get_model_count,
     get_model_families,
+    lookup_all_cefr_totals,
     lookup_score,
     rank_models,
     CEFR_LEVELS,
@@ -495,13 +496,28 @@ def lookup_score_body(session: Session) -> None:
                 session.reply(f"I couldn't find a Macro Average score for *{candidates[0]}*.")
             return
 
-        # Clarification: missing level
+        # No level specified: show all CEFR Totals when the model is identifiable
         if not level:
-            session.reply(
-                "Which CEFR level should I look up? Please specify A1, A2, B1, B2, C1, or C2 "
-                "(and optionally a category such as Grammar, Vocabulary, Reading Comprehension, "
-                "Listening Comprehension, or Total)."
-            )
+            if not candidates:
+                session.reply(
+                    "Please include a model name — e.g. *\"GPT-6 Astra\"* for all CEFR Totals, "
+                    "or *\"GPT-6 Astra C1\"* for a specific level."
+                )
+                return
+            if len(candidates) > 1:
+                names_list = ", ".join(f"*{n}*" for n in candidates[:5])
+                session.reply(
+                    f"I found multiple models matching your query: {names_list}. "
+                    "Which one did you mean?"
+                )
+                return
+            rows = lookup_all_cefr_totals(candidates[0])
+            if not rows:
+                session.reply(f"I couldn't find any CEFR Total scores for *{candidates[0]}*.")
+                return
+            header = f"**{rows[0]['model_name']} — CEFR Totals**\n\n"
+            lines = [f"• **{r['metric_name']}**: {r['score']:.2f}%" for r in rows]
+            session.reply(header + "\n".join(lines))
             return
 
         # Default category to Total if not specified
@@ -552,18 +568,11 @@ def rank_models_body(session: Session) -> None:
         ascending = extract_ascending(msg)
         licensing = extract_licensing(msg)
 
-        # Default level/category
+        # Default level/category — no level → Macro Average
         if not level:
-            level = "All" if ("macro" in msg.lower() or "overall" in msg.lower()) else None
+            level = "All"
         if not cat:
-            cat = "Macro" if (level == "All" or not level) else "Total"
-
-        if level is None:
-            session.reply(
-                "Which CEFR level and category should I rank by? For example: "
-                "*\"Top 5 models at B2 Grammar\"* or *\"Best models overall\"*."
-            )
-            return
+            cat = "Macro" if level == "All" else "Total"
 
         rows = rank_models(level, cat, top_n=top_n, ascending=ascending, licensing=licensing)
 

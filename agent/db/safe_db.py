@@ -123,6 +123,32 @@ def compare_models(model_names: list[str], level: str, category: str) -> list[di
     return [dict(r) for r in rows]
 
 
+def lookup_all_cefr_totals(model_name: str) -> list[dict]:
+    """Fetch all six CEFR-level Total scores for a model in A1→C2 order."""
+    total_ids = [
+        METRIC_IDS[('A1', 'Total')],
+        METRIC_IDS[('A2', 'Total')],
+        METRIC_IDS[('B1', 'Total')],
+        METRIC_IDS[('B2', 'Total')],
+        METRIC_IDS[('C1', 'Total')],
+        METRIC_IDS[('C2', 'Total')],
+    ]
+    placeholders = ','.join('?' * len(total_ids))
+    with _conn() as c:
+        rows = c.execute(
+            f"""SELECT e.name AS model_name, met.name AS metric_name,
+                       CAST(ms.value AS REAL) AS score
+                FROM model m
+                JOIN element e ON e.id = m.id
+                JOIN measure ms ON ms.measurand_id = m.id AND ms.metric_id IN ({placeholders})
+                JOIN metric met ON met.id = ms.metric_id
+                WHERE LOWER(e.name) = LOWER(?)
+                ORDER BY ms.metric_id""",
+            total_ids + [model_name]
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
 def find_models(query: str, max_results: int = 8) -> list[dict]:
     """Partial name search: returns models whose name contains the query string."""
     with _conn() as c:
