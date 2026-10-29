@@ -11,6 +11,7 @@ import json
 import logging
 import os
 import sys
+import traceback
 
 # Ensure the agent/ package is importable when run directly
 sys.path.insert(0, os.path.dirname(__file__))
@@ -394,6 +395,21 @@ def _get_all_names() -> list[str]:
 # Helper: emit a UI action (filter/reset) to the frontend
 # ---------------------------------------------------------------------------
 
+def _get_user_message(session: Session) -> str:
+    """Return the user's text from the current session event, or '' if unavailable.
+
+    BAF stores the triggering event on session.event.  After an intent-matched
+    transition the event is a ReceiveTextEvent (or ReceiveJSONEvent with the
+    user text in .message).  Initial/auto states have no user event, so we
+    guard with getattr to avoid AttributeError.
+    """
+    event = session.event
+    if event is None:
+        return ""
+    msg = getattr(event, "message", None)
+    return msg if isinstance(msg, str) else ""
+
+
 def _send_ui_action(session: Session, ui_action: dict) -> None:
     """
     Encode a UI action as a sentinel-prefixed text message.
@@ -431,313 +447,339 @@ explain_methodology_state.set_body(explain_methodology_body)
 
 
 def explain_metric_body(session: Session) -> None:
-    msg = session.message or ""
-    # Route to specific explanation if detected
-    cat = extract_category(msg)
-    lower = msg.lower()
-    if "cefr" in lower or "level" in lower or any(lv.lower() in lower for lv in ("a1", "a2", "b1", "b2", "c1", "c2")):
-        level_reply = CEFR_EXPLANATION
-        if cat and cat in METRIC_EXPLANATIONS:
-            level_reply += f"\n\n{METRIC_EXPLANATIONS[cat]}"
-        session.reply(level_reply)
-    elif cat and cat in METRIC_EXPLANATIONS:
-        session.reply(METRIC_EXPLANATIONS[cat])
-    elif "percent" in lower or "score" in lower or "interpret" in lower:
-        session.reply(SCORE_INTERPRETATION)
-    elif "macro" in lower or "overall" in lower or "average" in lower:
-        session.reply(METRIC_EXPLANATIONS["Macro"])
-    else:
-        session.reply(CEFR_EXPLANATION)
+    try:
+        msg = _get_user_message(session)
+        cat = extract_category(msg)
+        lower = msg.lower()
+        if "cefr" in lower or "level" in lower or any(lv.lower() in lower for lv in ("a1", "a2", "b1", "b2", "c1", "c2")):
+            level_reply = CEFR_EXPLANATION
+            if cat and cat in METRIC_EXPLANATIONS:
+                level_reply += f"\n\n{METRIC_EXPLANATIONS[cat]}"
+            session.reply(level_reply)
+        elif cat and cat in METRIC_EXPLANATIONS:
+            session.reply(METRIC_EXPLANATIONS[cat])
+        elif "percent" in lower or "score" in lower or "interpret" in lower:
+            session.reply(SCORE_INTERPRETATION)
+        elif "macro" in lower or "overall" in lower or "average" in lower:
+            session.reply(METRIC_EXPLANATIONS["Macro"])
+        else:
+            session.reply(CEFR_EXPLANATION)
+    except Exception:
+        baf_logger.error("explain_metric_body failed:\n%s", traceback.format_exc())
+        session.reply("I encountered an unexpected error explaining that metric. Please try again.")
 
 
 explain_metric_state.set_body(explain_metric_body)
 
 
 def lookup_score_body(session: Session) -> None:
-    msg = session.message or ""
-    all_names = _get_all_names()
+    try:
+        msg = _get_user_message(session)
+        all_names = _get_all_names()
 
-    level = extract_cefr_level(msg)
-    cat = extract_category(msg)
-    candidates = resolve_model_name(msg, all_names)
+        level = extract_cefr_level(msg)
+        cat = extract_category(msg)
+        candidates = resolve_model_name(msg, all_names)
 
-    # Handle "macro avg" / "overall" queries (no level needed)
-    if not level and ("macro" in msg.lower() or ("overall" in msg.lower() and not cat)):
-        if not candidates:
-            session.reply("Which model's Macro Average score would you like? Please include the model name.")
+        # Handle "macro avg" / "overall" queries (no level needed)
+        if not level and ("macro" in msg.lower() or ("overall" in msg.lower() and not cat)):
+            if not candidates:
+                session.reply("Which model's Macro Average score would you like? Please include the model name.")
+                return
+            result = lookup_score(candidates[0], "All", "Macro")
+            if result:
+                session.reply(
+                    f"**{result['model_name']}** — Macro Average: **{float(result['value']):.2f}%**"
+                )
+            else:
+                session.reply(f"I couldn't find a Macro Average score for *{candidates[0]}*.")
             return
-        result = lookup_score(candidates[0], "All", "Macro")
+
+        # Clarification: missing level
+        if not level:
+            session.reply(
+                "Which CEFR level should I look up? Please specify A1, A2, B1, B2, C1, or C2 "
+                "(and optionally a category such as Grammar, Vocabulary, Reading Comprehension, "
+                "Listening Comprehension, or Total)."
+            )
+            return
+
+        # Default category to Total if not specified
+        if not cat:
+            cat = "Total"
+
+        # Clarification: missing model name
+        if not candidates:
+            session.reply(
+                f"Which model's {level} {cat} score would you like? Please include the model name."
+            )
+            return
+
+        # Handle ambiguous match
+        if len(candidates) > 1:
+            names_list = ", ".join(f"*{n}*" for n in candidates[:5])
+            session.reply(
+                f"I found multiple models matching your query: {names_list}. "
+                "Which one did you mean?"
+            )
+            return
+
+        result = lookup_score(candidates[0], level, cat)
         if result:
             session.reply(
-                f"**{result['model_name']}** — Macro Average: **{float(result['value']):.2f}%**"
+                f"**{result['model_name']}** — {result['metric_name']}: **{float(result['value']):.2f}%**"
             )
         else:
-            session.reply(f"I couldn't find a Macro Average score for *{candidates[0]}*.")
-        return
-
-    # Clarification: missing level
-    if not level:
-        session.reply(
-            "Which CEFR level should I look up? Please specify A1, A2, B1, B2, C1, or C2 "
-            "(and optionally a category such as Grammar, Vocabulary, Reading Comprehension, "
-            "Listening Comprehension, or Total)."
-        )
-        return
-
-    # Default category to Total if not specified
-    if not cat:
-        cat = "Total"
-
-    # Clarification: missing model name
-    if not candidates:
-        session.reply(
-            f"Which model's {level} {cat} score would you like? Please include the model name."
-        )
-        return
-
-    # Handle ambiguous match
-    if len(candidates) > 1:
-        names_list = ", ".join(f"*{n}*" for n in candidates[:5])
-        session.reply(
-            f"I found multiple models matching your query: {names_list}. "
-            "Which one did you mean?"
-        )
-        return
-
-    result = lookup_score(candidates[0], level, cat)
-    if result:
-        session.reply(
-            f"**{result['model_name']}** — {result['metric_name']}: **{float(result['value']):.2f}%**"
-        )
-    else:
-        session.reply(
-            f"I could not find a recorded {level} {cat} score for *{candidates[0]}*. "
-            "A missing result is not a score of zero."
-        )
+            session.reply(
+                f"I could not find a recorded {level} {cat} score for *{candidates[0]}*. "
+                "A missing result is not a score of zero."
+            )
+    except Exception:
+        baf_logger.error("lookup_score_body failed:\n%s", traceback.format_exc())
+        session.reply("I encountered an error looking up that score. Please try again.")
 
 
 lookup_score_state.set_body(lookup_score_body)
 
 
 def rank_models_body(session: Session) -> None:
-    msg = session.message or ""
+    try:
+        msg = _get_user_message(session)
 
-    level = extract_cefr_level(msg)
-    cat = extract_category(msg)
-    top_n = extract_top_n(msg, default=5)
-    ascending = extract_ascending(msg)
-    licensing = extract_licensing(msg)
+        level = extract_cefr_level(msg)
+        cat = extract_category(msg)
+        top_n = extract_top_n(msg, default=5)
+        ascending = extract_ascending(msg)
+        licensing = extract_licensing(msg)
 
-    # Default level/category
-    if not level:
-        level = "All" if ("macro" in msg.lower() or "overall" in msg.lower()) else None
-    if not cat:
-        cat = "Macro" if (level == "All" or not level) else "Total"
+        # Default level/category
+        if not level:
+            level = "All" if ("macro" in msg.lower() or "overall" in msg.lower()) else None
+        if not cat:
+            cat = "Macro" if (level == "All" or not level) else "Total"
 
-    if level is None:
-        session.reply(
-            "Which CEFR level and category should I rank by? For example: "
-            "*\"Top 5 models at B2 Grammar\"* or *\"Best models overall\"*."
+        if level is None:
+            session.reply(
+                "Which CEFR level and category should I rank by? For example: "
+                "*\"Top 5 models at B2 Grammar\"* or *\"Best models overall\"*."
+            )
+            return
+
+        rows = rank_models(level, cat, top_n=top_n, ascending=ascending, licensing=licensing)
+
+        if not rows:
+            session.reply(
+                f"No recorded results found for **{level} {cat}**"
+                + (f" ({licensing.replace('_', ' ')} models)" if licensing else "") + "."
+            )
+            return
+
+        direction = "Lowest" if ascending else "Top"
+        header = (
+            f"**{direction} {len(rows)} — {level} {cat}**"
+            + (f" · {licensing.replace('_', ' ')}" if licensing else "")
+            + "\n\n"
         )
-        return
-
-    rows = rank_models(level, cat, top_n=top_n, ascending=ascending, licensing=licensing)
-
-    if not rows:
-        session.reply(
-            f"No recorded results found for **{level} {cat}**"
-            + (f" ({licensing.replace('_', ' ')} models)" if licensing else "") + "."
-        )
-        return
-
-    direction = "Lowest" if ascending else "Top"
-    header = (
-        f"**{direction} {len(rows)} — {level} {cat}**"
-        + (f" · {licensing.replace('_', ' ')}" if licensing else "")
-        + "\n\n"
-    )
-    lines = [
-        f"{i+1}. **{r['model_name']}** — {r['score']:.2f}%"
-        for i, r in enumerate(rows)
-    ]
-    session.reply(header + "\n".join(lines))
+        lines = [
+            f"{i+1}. **{r['model_name']}** — {r['score']:.2f}%"
+            for i, r in enumerate(rows)
+        ]
+        session.reply(header + "\n".join(lines))
+    except Exception:
+        baf_logger.error("rank_models_body failed:\n%s", traceback.format_exc())
+        session.reply("I encountered an error fetching model rankings. Please try again.")
 
 
 rank_models_state.set_body(rank_models_body)
 
 
 def compare_models_body(session: Session) -> None:
-    msg = session.message or ""
-    all_names = _get_all_names()
+    try:
+        msg = _get_user_message(session)
+        all_names = _get_all_names()
 
-    level = extract_cefr_level(msg)
-    cat = extract_category(msg)
-    candidates = resolve_model_name(msg, all_names)
+        level = extract_cefr_level(msg)
+        cat = extract_category(msg)
+        candidates = resolve_model_name(msg, all_names)
 
-    if len(candidates) < 2:
-        session.reply(
-            "Please name at least two models to compare. For example: "
-            "*\"Compare GPT-4o and Llama 3.1 - 70B at B2 Grammar.\"*"
-        )
-        return
+        if len(candidates) < 2:
+            session.reply(
+                "Please name at least two models to compare. For example: "
+                "*\"Compare Llama 3.1 - 70B and Qwen 3 - 14B at B2 Grammar.\"*"
+            )
+            return
 
-    if not level:
-        session.reply(
-            f"Which CEFR level should I use to compare {candidates[0]} and {candidates[1]}? "
-            "Please specify A1–C2 (and optionally a category)."
-        )
-        return
+        if not level:
+            session.reply(
+                f"Which CEFR level should I use to compare {candidates[0]} and {candidates[1]}? "
+                "Please specify A1–C2 (and optionally a category)."
+            )
+            return
 
-    if not cat:
-        cat = "Total"
+        if not cat:
+            cat = "Total"
 
-    rows = compare_models(candidates[:3], level, cat)
+        rows = compare_models(candidates[:3], level, cat)
 
-    if not rows:
-        session.reply(
-            f"I couldn't find {level} {cat} scores for the specified models. "
-            "Please check the model names and try again."
-        )
-        return
+        if not rows:
+            session.reply(
+                f"I couldn't find {level} {cat} scores for the specified models. "
+                "Please check the model names and try again."
+            )
+            return
 
-    if len(rows) == 1:
-        session.reply(
-            f"I only found a result for **{rows[0]['model_name']}** "
-            f"({level} {cat}: **{rows[0]['score']:.2f}%**). "
-            "I could not find a matching result for the other model."
-        )
-        return
+        if len(rows) == 1:
+            session.reply(
+                f"I only found a result for **{rows[0]['model_name']}** "
+                f"({level} {cat}: **{rows[0]['score']:.2f}%**). "
+                "I could not find a matching result for the other model."
+            )
+            return
 
-    header = f"**{level} {cat} — comparison**\n\n"
-    lines = [
-        f"{i+1}. **{r['model_name']}** — {r['score']:.2f}%"
-        for i, r in enumerate(rows)
-    ]
-    if len(rows) == 2:
-        delta = abs(rows[0]['score'] - rows[1]['score'])
-        leader = rows[0]['model_name']
-        trailer = rows[1]['model_name']
-        lines.append(
-            f"\n*{leader} leads by **{delta:.2f} percentage points**.*"
-        )
+        header = f"**{level} {cat} — comparison**\n\n"
+        lines = [
+            f"{i+1}. **{r['model_name']}** — {r['score']:.2f}%"
+            for i, r in enumerate(rows)
+        ]
+        if len(rows) == 2:
+            delta = abs(rows[0]['score'] - rows[1]['score'])
+            leader = rows[0]['model_name']
+            lines.append(
+                f"\n*{leader} leads by **{delta:.2f} percentage points**.*"
+            )
 
-    session.reply(header + "\n".join(lines))
+        session.reply(header + "\n".join(lines))
+    except Exception:
+        baf_logger.error("compare_models_body failed:\n%s", traceback.format_exc())
+        session.reply("I encountered an error comparing those models. Please try again.")
 
 
 compare_models_state.set_body(compare_models_body)
 
 
 def filter_results_body(session: Session) -> None:
-    msg = session.message or ""
+    try:
+        msg = _get_user_message(session)
 
-    level = extract_cefr_level(msg)
-    cat = extract_category(msg)
-    licensing = extract_licensing(msg)
+        level = extract_cefr_level(msg)
+        cat = extract_category(msg)
+        licensing = extract_licensing(msg)
 
-    # Detect family mentions (basic heuristic)
-    family = None
-    msg_lower = msg.lower()
-    for f in get_model_families():
-        if f.lower() in msg_lower:
-            family = f
-            break
+        # Detect family mentions (basic heuristic)
+        family = None
+        msg_lower = msg.lower()
+        for f in get_model_families():
+            if f.lower() in msg_lower:
+                family = f
+                break
 
-    filters: dict = {}
-    if level:
-        filters["cefrLevel"] = level
-    if cat:
-        filters["testCategory"] = cat
-    if licensing:
-        filters["licensingType"] = licensing
-    if family:
-        filters["family"] = family
+        filters: dict = {}
+        if level:
+            filters["cefrLevel"] = level
+        if cat:
+            filters["testCategory"] = cat
+        if licensing:
+            filters["licensingType"] = licensing
+        if family:
+            filters["family"] = family
 
-    if not filters:
-        session.reply(
-            "I couldn't identify which filter to apply. "
-            "Try: *\"Filter to B1 Grammar\"*, *\"Show only open-source models\"*, "
-            "or *\"Display Llama family models.\"*"
-        )
-        return
+        if not filters:
+            session.reply(
+                "I couldn't identify which filter to apply. "
+                "Try: *\"Filter to B1 Grammar\"*, *\"Show only open-source models\"*, "
+                "or *\"Display Llama family models.\"*"
+            )
+            return
 
-    parts = []
-    if "cefrLevel" in filters:
-        parts.append(f"CEFR level **{filters['cefrLevel']}**")
-    if "testCategory" in filters:
-        parts.append(f"category **{filters['testCategory']}**")
-    if "licensingType" in filters:
-        parts.append(f"**{filters['licensingType'].replace('_', ' ')}** models")
-    if "family" in filters:
-        parts.append(f"**{filters['family']}** family")
+        parts = []
+        if "cefrLevel" in filters:
+            parts.append(f"CEFR level **{filters['cefrLevel']}**")
+        if "testCategory" in filters:
+            parts.append(f"category **{filters['testCategory']}**")
+        if "licensingType" in filters:
+            parts.append(f"**{filters['licensingType'].replace('_', ' ')}** models")
+        if "family" in filters:
+            parts.append(f"**{filters['family']}** family")
 
-    session.reply(f"Applying filter: {', '.join(parts)}.")
-    _send_ui_action(session, {"type": "apply_filters", "filters": filters})
+        session.reply(f"Applying filter: {', '.join(parts)}.")
+        _send_ui_action(session, {"type": "apply_filters", "filters": filters})
+    except Exception:
+        baf_logger.error("filter_results_body failed:\n%s", traceback.format_exc())
+        session.reply("I encountered an error applying that filter. Please try again.")
 
 
 filter_results_state.set_body(filter_results_body)
 
 
 def reset_view_body(session: Session) -> None:
-    msg = session.message or ""
-    lower = msg.lower()
+    try:
+        msg = _get_user_message(session)
+        lower = msg.lower()
 
-    # Detect selective reset
-    fields = []
-    if "cefr" in lower or "level" in lower:
-        fields.append("cefrLevel")
-    if "category" in lower or "grammar" in lower or "vocab" in lower or "listening" in lower or "reading" in lower:
-        fields.append("testCategory")
-    if "licens" in lower or "open" in lower or "proprietary" in lower or "closed" in lower:
-        fields.append("licensingType")
-    if "performance" in lower or "threshold" in lower or "percent" in lower or "minimum" in lower:
-        fields.append("minPerformance")
+        # Detect selective reset
+        fields = []
+        if "cefr" in lower or "level" in lower:
+            fields.append("cefrLevel")
+        if "category" in lower or "grammar" in lower or "vocab" in lower or "listening" in lower or "reading" in lower:
+            fields.append("testCategory")
+        if "licens" in lower or "open" in lower or "proprietary" in lower or "closed" in lower:
+            fields.append("licensingType")
+        if "performance" in lower or "threshold" in lower or "percent" in lower or "minimum" in lower:
+            fields.append("minPerformance")
 
-    if fields:
-        field_labels = ", ".join(f"**{f}**" for f in fields)
-        session.reply(f"Resetting filter: {field_labels}.")
-        _send_ui_action(session, {"type": "reset_filters", "fields": fields})
-    else:
-        session.reply("Resetting all leaderboard filters to default.")
-        _send_ui_action(session, {"type": "reset_filters"})
+        if fields:
+            field_labels = ", ".join(f"**{f}**" for f in fields)
+            session.reply(f"Resetting filter: {field_labels}.")
+            _send_ui_action(session, {"type": "reset_filters", "fields": fields})
+        else:
+            session.reply("Resetting all leaderboard filters to default.")
+            _send_ui_action(session, {"type": "reset_filters"})
+    except Exception:
+        baf_logger.error("reset_view_body failed:\n%s", traceback.format_exc())
+        session.reply("I encountered an error resetting the filters. Please try again.")
 
 
 reset_view_state.set_body(reset_view_body)
 
 
 def data_coverage_body(session: Session) -> None:
-    msg = session.message or ""
-    all_names = _get_all_names()
+    try:
+        msg = _get_user_message(session)
+        all_names = _get_all_names()
 
-    # Check if asking about a specific model
-    candidates = resolve_model_name(msg, all_names)
-    if candidates and any(kw in msg.lower() for kw in ("include", "in the", "listed", "appear", "is model")):
-        matches = [n for n in candidates if n.lower() in msg.lower() or any(
-            w in n.lower() for w in msg.lower().split() if len(w) >= 4
-        )]
-        if matches:
-            session.reply(
-                f"Yes, **{matches[0]}** is included in the leaderboard with results "
-                f"across all 31 metrics (6 CEFR levels × 4 categories + Macro Average)."
-            )
-        else:
-            session.reply(
-                "I couldn't find that model. Try searching with the exact name as shown in the table."
-            )
-        return
+        # Check if asking about a specific model
+        candidates = resolve_model_name(msg, all_names)
+        if candidates and any(kw in msg.lower() for kw in ("include", "in the", "listed", "appear", "is model")):
+            matches = [n for n in candidates if n.lower() in msg.lower() or any(
+                w in n.lower() for w in msg.lower().split() if len(w) >= 4
+            )]
+            if matches:
+                session.reply(
+                    f"Yes, **{matches[0]}** is included in the leaderboard with results "
+                    f"across all 31 metrics (6 CEFR levels × 4 categories + Macro Average)."
+                )
+            else:
+                session.reply(
+                    "I couldn't find that model. Try searching with the exact name as shown in the table."
+                )
+            return
 
-    stats = get_coverage_stats()
-    families = get_model_families()
-    session.reply(
-        f"**LëtzEval leaderboard coverage:**\n\n"
-        f"• **{stats['model_count']} models** evaluated\n"
-        f"• **{stats['open_source']} open-source** and **{stats['proprietary']} proprietary** models\n"
-        f"• **{stats['families']} model families** represented: {', '.join(families[:10])}"
-        + (" ..." if len(families) > 10 else "") + "\n"
-        f"• **6 CEFR levels**: A1, A2, B1, B2, C1, C2\n"
-        f"• **4 task categories**: Grammar, Vocabulary, Reading Comprehension, Listening Comprehension\n"
-        f"• **31 metrics** per model (5 per level + Macro Average)\n"
-        f"• All models have complete results across all metrics"
-    )
+        stats = get_coverage_stats()
+        families = get_model_families()
+        session.reply(
+            f"**LëtzEval leaderboard coverage:**\n\n"
+            f"• **{stats['model_count']} models** evaluated\n"
+            f"• **{stats['open_source']} open-source** and **{stats['proprietary']} proprietary** models\n"
+            f"• **{stats['families']} model families** represented: {', '.join(families[:10])}"
+            + (" ..." if len(families) > 10 else "") + "\n"
+            f"• **6 CEFR levels**: A1, A2, B1, B2, C1, C2\n"
+            f"• **4 task categories**: Grammar, Vocabulary, Reading Comprehension, Listening Comprehension\n"
+            f"• **31 metrics** per model (5 per level + Macro Average)\n"
+            f"• All models have complete results across all metrics"
+        )
+    except Exception:
+        baf_logger.error("data_coverage_body failed:\n%s", traceback.format_exc())
+        session.reply("I encountered an error fetching coverage statistics. Please try again.")
 
 
 data_coverage_state.set_body(data_coverage_body)
