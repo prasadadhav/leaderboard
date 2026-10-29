@@ -103,6 +103,14 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     fetchData();
   }, []);
 
+  // Auto-switch plot mode when CEFR / category filters change.
+  // Activating either filter → Detailed; resetting both → Simple.
+  useEffect(() => {
+    const hasFilter =
+      filters.cefrLevel !== "All" || filters.testCategory !== "All";
+    setPlotMode(hasFilter ? "detailed" : "simple");
+  }, [filters.cefrLevel, filters.testCategory]);
+
   useEffect(() => {
     if (!allData || allData.length === 0) {
       setFilteredData([]);
@@ -179,6 +187,17 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     setFilteredData(filtered);
   }, [allData, filters, maxModels, plotMode]);
 
+  // Compute sample count visibility before styles (used in chartContainerStyle + XAxis).
+  const activeSampleCount =
+    plotMode === "simple"
+      ? 629
+      : getSampleCount(filters.cefrLevel, filters.testCategory);
+
+  const showSampleCount =
+    plotMode === "simple" ||
+    filters.cefrLevel !== "All" ||
+    filters.testCategory !== "All";
+
   const containerStyle: CSSProperties = {
     width: "100%",
     maxWidth: "100%",
@@ -194,7 +213,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
   const chartContainerStyle: CSSProperties = {
     width: "100%",
-    height: "500px",
+    height: showSampleCount ? "540px" : "500px",
     marginTop: "24px",
   };
 
@@ -238,21 +257,6 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
             : t("chart.metricNames.grammar");
 
   const getMetricLabel = (level: string) => `${level} ${metricNameSuffix}`;
-
-  // Sample count for the current filter selection.
-  // Simple mode always reflects the full 629-question evaluation (macro avg denominator).
-  // Detailed mode reflects the filtered subset defined by the active CEFR + category filters.
-  const activeSampleCount =
-    plotMode === "simple"
-      ? 629
-      : getSampleCount(filters.cefrLevel, filters.testCategory);
-
-  // Only append (n=X) when a filter is active (not both All) or in simple mode.
-  // In simple mode we always show it since macro avg has a defined n.
-  const showSampleCount =
-    plotMode === "simple" ||
-    filters.cefrLevel !== "All" ||
-    filters.testCategory !== "All";
 
   const xAxisTickFormatter = (name: string) =>
     showSampleCount ? `${name} (n=${activeSampleCount})` : name;
@@ -341,7 +345,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
                 dataKey="name"
                 angle={-45}
                 textAnchor="end"
-                height={80}
+                height={showSampleCount ? 110 : 80}
                 interval={0}
                 tick={{ fontSize: 11, fill: colors.chartAxis }}
                 stroke={colors.chartAxis}
