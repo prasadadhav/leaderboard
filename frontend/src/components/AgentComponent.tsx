@@ -16,6 +16,7 @@ interface ChatMessage {
   text: string;
   sender: "user" | "agent";
   isMarkdown?: boolean;
+  options?: string[];   // clickable suggestion pills (from agent_reply_options)
 }
 
 // Minimal inline markdown → HTML (bold, italic, inline-code, newlines only)
@@ -80,20 +81,39 @@ export const AgentComponent: React.FC = () => {
       ws.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
+          const action  = payload.action as string | undefined;
+
+          // BAF agent_reply_options: {0: "opt1", 1: "opt2", ...}
+          if (action === "agent_reply_options") {
+            try {
+              const optMap: Record<string, string> = JSON.parse(payload.message as string);
+              const opts = Object.values(optMap);
+              if (opts.length > 0) {
+                setMessages((prev) => [
+                  ...prev,
+                  { text: "", sender: "agent", options: opts },
+                ]);
+              }
+            } catch {
+              // malformed options payload — ignore
+            }
+            return;
+          }
+
           let text = payload.message ?? JSON.stringify(payload);
 
           // Detect and dispatch UI action — never show in chat
           if (typeof text === "string" && text.startsWith(UI_ACTION_PREFIX)) {
-            const json = text.slice(UI_ACTION_PREFIX.length);
+            const jsonStr = text.slice(UI_ACTION_PREFIX.length);
             try {
-              const action = JSON.parse(json);
-              if (action.type === "apply_filters") {
+              const uiAction = JSON.parse(jsonStr);
+              if (uiAction.type === "apply_filters") {
                 window.dispatchEvent(
-                  new CustomEvent("letzeval:apply_filters", { detail: action.filters })
+                  new CustomEvent("letzeval:apply_filters", { detail: uiAction.filters })
                 );
-              } else if (action.type === "reset_filters") {
+              } else if (uiAction.type === "reset_filters") {
                 window.dispatchEvent(
-                  new CustomEvent("letzeval:reset_filters", { detail: action })
+                  new CustomEvent("letzeval:reset_filters", { detail: uiAction })
                 );
               }
             } catch {
@@ -175,6 +195,12 @@ export const AgentComponent: React.FC = () => {
     setMessages([]);
     // Re-send language so the new session knows the UI language immediately
     sendLang(wsRef.current, i18n.language);
+  };
+
+  const sendOption = (option: string) => {
+    if (!wsRef.current || !isConnected) return;
+    setMessages((prev) => [...prev, { text: option, sender: "user" }]);
+    wsRef.current.send(JSON.stringify({ action: "user_message", message: option }));
   };
 
   const onKey = (e: React.KeyboardEvent) => {
@@ -371,7 +397,29 @@ export const AgentComponent: React.FC = () => {
               </div>
             )}
             {messages.map((msg, i) =>
-              msg.isMarkdown ? (
+              msg.options ? (
+                <div key={i} style={{ display: "flex", flexWrap: "wrap", gap: 6, alignSelf: "flex-start" }}>
+                  {msg.options.map((opt, j) => (
+                    <button
+                      key={j}
+                      onClick={() => sendOption(opt)}
+                      disabled={!isConnected}
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: 16,
+                        border: `1px solid ${colors.accent}`,
+                        background: "transparent",
+                        color: colors.accent,
+                        cursor: isConnected ? "pointer" : "not-allowed",
+                        fontSize: 13,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {opt}
+                    </button>
+                  ))}
+                </div>
+              ) : msg.isMarkdown ? (
                 <div
                   key={i}
                   style={bubbleStyle(msg.sender)}

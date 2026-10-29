@@ -6,9 +6,20 @@ Run from the leaderboard/agent/ directory:
 
 Requires: BAF 4.5.0 + PyTorch (available in /home/adhav/besser-demo/.venv)
 Config:   config.yaml  (copy config.example.yaml and adjust paths if needed)
+
+Agent modes (LETZEVAL_AGENT_MODE):
+    classical  (default) — BAF PyTorch intent classifier routes messages directly
+                           to handler states; LLM used only as entity-extraction
+                           fallback in lookup/compare handlers.
+    llm        — All messages pass through an LLM interpretation state first.
+                 The LLM extracts intent, model names, CEFR level and category;
+                 its validated output is passed to the same handler states.
+                 When the LLM is unavailable, falls back to the BAF-classified
+                 intent + classical entity extraction.
 """
 import json
 import logging
+import operator as _op
 import os
 import sys
 import traceback
@@ -17,10 +28,12 @@ import traceback
 try:
     from llm.config import get_llm_provider
     from llm.router import classify_with_llm, ALLOWED_INTENTS
+    from llm.sanitize import sanitize as _sanitize_input
 except ImportError:
     get_llm_provider = lambda agent=None: None  # noqa: E731
     classify_with_llm = lambda *a, **kw: None   # noqa: E731
     ALLOWED_INTENTS = frozenset()
+    _sanitize_input = lambda s: s              # noqa: E731
 
 # Ensure the agent/ package is importable when run directly
 sys.path.insert(0, os.path.dirname(__file__))
@@ -64,6 +77,18 @@ from intents.responses import (
 from intents.i18n import t as _t
 
 baf_logger.setLevel(logging.INFO)
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+
+# LETZEVAL_AGENT_MODE: 'classical' (default) | 'llm'
+AGENT_MODE = os.environ.get('LETZEVAL_AGENT_MODE', 'classical').lower().strip()
+if AGENT_MODE not in ('classical', 'llm'):
+    logging.warning("Unknown LETZEVAL_AGENT_MODE=%r; defaulting to 'classical'.", AGENT_MODE)
+    AGENT_MODE = 'classical'
+
+logging.info("Agent mode: %s", AGENT_MODE)
 
 # ---------------------------------------------------------------------------
 # Training sentences (20 per intent, from intents_train.csv)
@@ -362,31 +387,6 @@ reset_view_state          = agent.new_state("reset_view_state")
 out_of_scope_state        = agent.new_state("out_of_scope_state")
 
 # ---------------------------------------------------------------------------
-# Transitions: initial_state → handler states
-# ---------------------------------------------------------------------------
-
-initial_state.when_intent_matched(explain_leaderboard_intent).go_to(explain_leaderboard_state)
-initial_state.when_intent_matched(explain_methodology_intent).go_to(explain_methodology_state)
-initial_state.when_intent_matched(lookup_score_intent).go_to(lookup_score_state)
-initial_state.when_intent_matched(rank_models_intent).go_to(rank_models_state)
-initial_state.when_intent_matched(compare_models_intent).go_to(compare_models_state)
-initial_state.when_intent_matched(filter_results_intent).go_to(filter_results_state)
-initial_state.when_intent_matched(explain_metric_intent).go_to(explain_metric_state)
-initial_state.when_intent_matched(data_coverage_intent).go_to(data_coverage_state)
-initial_state.when_intent_matched(reset_view_intent).go_to(reset_view_state)
-initial_state.when_intent_matched(out_of_scope_intent).go_to(out_of_scope_state)
-initial_state.when_no_intent_matched().go_to(out_of_scope_state)
-
-# All handler states return to initial_state
-for _s in [
-    explain_leaderboard_state, explain_methodology_state,
-    lookup_score_state, rank_models_state, compare_models_state,
-    filter_results_state, explain_metric_state, data_coverage_state,
-    reset_view_state, out_of_scope_state,
-]:
-    _s.go_to(initial_state)
-
-# ---------------------------------------------------------------------------
 # LLM provider (none by default; set LETZEVAL_LLM_PROVIDER env var to enable)
 # ---------------------------------------------------------------------------
 
@@ -407,17 +407,11 @@ def _get_all_names() -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# Helper: emit a UI action (filter/reset) to the frontend
+# Helpers
 # ---------------------------------------------------------------------------
 
 def _get_user_message(session: Session) -> str:
-    """Return the user's text from the current session event, or '' if unavailable.
-
-    BAF stores the triggering event on session.event.  After an intent-matched
-    transition the event is a ReceiveTextEvent (or ReceiveJSONEvent with the
-    user text in .message).  Initial/auto states have no user event, so we
-    guard with getattr to avoid AttributeError.
-    """
+    """Return the user's text from the current session event, or '' if unavailable."""
     event = session.event
     if event is None:
         return ""
@@ -432,13 +426,118 @@ def _lang(session: Session) -> str:
 
 
 def _send_ui_action(session: Session, ui_action: dict) -> None:
-    """
-    Encode a UI action as a sentinel-prefixed text message.
-    AgentComponent.tsx strips the sentinel and applies the action client-side.
-    The sentinel prefix keeps the message out of the visible chat history.
-    """
+    """Encode a UI action as a sentinel-prefixed text message."""
     session.reply(f'__UI_ACTION__{json.dumps(ui_action)}')
 
+
+def _consume_llm_route(session: Session) -> dict | None:
+    """Read and clear the LLM-provided route stored in the session.
+
+    Returns the parsed route dict, or None if not present.
+    Handler state bodies call this once at the start; in classical mode
+    the key is never set so this always returns None.
+    """
+    val = session.get('_llm_route')
+    if val:
+        session.set('_llm_route', None)
+        session.set('_next', None)
+        try:
+            return json.loads(val)
+        except Exception:
+            return None
+    return None
+
+
+def _reply_options_if_ambiguous(
+    session: Session,
+    candidates: list[str],
+    pending_intent: str,
+    pending_cefr: str | None = None,
+    pending_cat: str | None = None,
+    pending_top_n: int | None = None,
+    pending_ascending: bool = False,
+) -> bool:
+    """If there are multiple candidates, send clickable options and store pending intent.
+
+    Returns True if clarification was sent (caller should return early).
+    Returns False if candidates is empty or exactly one (no clarification needed).
+    """
+    if len(candidates) <= 1:
+        return False
+    session.set('_pending_route', json.dumps({
+        'intent': pending_intent,
+        'models': [],
+        'cefr_level': pending_cefr,
+        'category': pending_cat,
+        'top_n': pending_top_n,
+        'ascending': pending_ascending,
+        'needs_clarification': True,
+    }))
+    websocket_platform.reply_options(session, candidates[:5])
+    return True
+
+
+# ---------------------------------------------------------------------------
+# Transitions: set up based on AGENT_MODE
+# ---------------------------------------------------------------------------
+
+_ALL_INTENTS = [
+    explain_leaderboard_intent, explain_methodology_intent,
+    lookup_score_intent, rank_models_intent, compare_models_intent,
+    filter_results_intent, explain_metric_intent, data_coverage_intent,
+    reset_view_intent, out_of_scope_intent,
+]
+
+if AGENT_MODE == 'llm':
+    # LLM mode: all messages route through the interpretation state first
+    llm_interpret_state = agent.new_state("llm_interpret_state")
+
+    for intent_obj in _ALL_INTENTS:
+        initial_state.when_intent_matched(intent_obj).go_to(llm_interpret_state)
+    initial_state.when_no_intent_matched().go_to(llm_interpret_state)
+
+    # Variable-based transitions: llm_interpret_state → handler states
+    _INTENT_STATE_MAP = {
+        'explain_leaderboard': explain_leaderboard_state,
+        'explain_methodology': explain_methodology_state,
+        'lookup_score':        lookup_score_state,
+        'rank_models':         rank_models_state,
+        'compare_models':      compare_models_state,
+        'filter_results':      filter_results_state,
+        'explain_metric':      explain_metric_state,
+        'data_coverage':       data_coverage_state,
+        'reset_view':          reset_view_state,
+        'out_of_scope':        out_of_scope_state,
+        'clarify':             initial_state,   # pending clarification → wait
+    }
+    for intent_name, state_obj in _INTENT_STATE_MAP.items():
+        llm_interpret_state.when_variable_matches_operation(
+            '_next', _op.eq, intent_name
+        ).go_to(state_obj)
+    llm_interpret_state.go_to(out_of_scope_state)   # fallback if _next not set
+
+else:
+    # Classical mode: direct routing
+    initial_state.when_intent_matched(explain_leaderboard_intent).go_to(explain_leaderboard_state)
+    initial_state.when_intent_matched(explain_methodology_intent).go_to(explain_methodology_state)
+    initial_state.when_intent_matched(lookup_score_intent).go_to(lookup_score_state)
+    initial_state.when_intent_matched(rank_models_intent).go_to(rank_models_state)
+    initial_state.when_intent_matched(compare_models_intent).go_to(compare_models_state)
+    initial_state.when_intent_matched(filter_results_intent).go_to(filter_results_state)
+    initial_state.when_intent_matched(explain_metric_intent).go_to(explain_metric_state)
+    initial_state.when_intent_matched(data_coverage_intent).go_to(data_coverage_state)
+    initial_state.when_intent_matched(reset_view_intent).go_to(reset_view_state)
+    initial_state.when_intent_matched(out_of_scope_intent).go_to(out_of_scope_state)
+    initial_state.when_no_intent_matched().go_to(out_of_scope_state)
+
+# All handler states return to initial_state
+for _s in [
+    explain_leaderboard_state, explain_methodology_state,
+    lookup_score_state, rank_models_state, compare_models_state,
+    filter_results_state, explain_metric_state, data_coverage_state,
+    reset_view_state, out_of_scope_state,
+]:
+    _s.go_to(initial_state)
 
 # ---------------------------------------------------------------------------
 # State body functions
@@ -453,7 +552,86 @@ def initial_body(session: Session) -> None:
 initial_state.set_body(initial_body)
 
 
+# ── LLM mode: interpret state ────────────────────────────────────────────────
+
+def llm_interpret_body(session: Session) -> None:
+    """Run the LLM interpreter and store route + next-state in session."""
+    msg = _get_user_message(session)
+    lang = _lang(session)
+    all_names = _get_all_names()
+
+    # Resolve pending clarification: user responded to reply_options
+    pending_json = session.get('_pending_route')
+    if pending_json:
+        session.set('_pending_route', None)
+        try:
+            pending = json.loads(pending_json)
+            # Check if user's message resolves to a known model
+            matches = resolve_model_name(msg, all_names)
+            # Also check exact match (user typed the model name precisely)
+            exact = next((n for n in all_names if n.lower() == msg.strip().lower()), None)
+            chosen = [exact] if exact else (matches[:1] if matches else [])
+            if chosen:
+                pending['models'] = chosen
+                pending['needs_clarification'] = False
+                session.set('_llm_route', json.dumps(pending))
+                session.set('_next', pending.get('intent', 'out_of_scope'))
+                return
+        except Exception:
+            pass
+        # Pending resolution failed — fall through to normal LLM routing
+
+    # LLM unavailable — fall back to BAF classifier intent + classical extraction
+    if _llm is None:
+        try:
+            baf_intent = session.event.predicted_intent.intent.name
+        except AttributeError:
+            baf_intent = 'out_of_scope'
+        session.set('_next', baf_intent if baf_intent in _INTENT_STATE_MAP else 'out_of_scope')
+        return
+
+    # Sanitize and route via LLM
+    sanitized = _sanitize_input(msg)
+    route = classify_with_llm(_llm, sanitized, None, all_names[:20], all_names)
+
+    if route is None:
+        # LLM call failed — recover BAF classifier intent as fallback
+        try:
+            baf_intent = session.event.predicted_intent.intent.name
+        except AttributeError:
+            baf_intent = 'out_of_scope'
+        session.set('_next', baf_intent if baf_intent in _INTENT_STATE_MAP else 'out_of_scope')
+        return
+
+    # Ambiguous model — show clickable options and wait for selection
+    if route.get('needs_clarification') and route.get('models'):
+        candidates = route['models']
+        session.set('_pending_route', json.dumps({
+            'intent': route.get('intent', 'lookup_score'),
+            'models': [],
+            'cefr_level': route.get('cefr_level'),
+            'category': route.get('category'),
+            'top_n': route.get('top_n'),
+            'ascending': route.get('ascending', False),
+            'needs_clarification': True,
+        }))
+        session.reply(_t('llm_needs_clarification', lang))
+        websocket_platform.reply_options(session, candidates)
+        session.set('_next', 'clarify')
+        return
+
+    session.set('_llm_route', json.dumps(route))
+    session.set('_next', route.get('intent', 'out_of_scope'))
+
+
+if AGENT_MODE == 'llm':
+    llm_interpret_state.set_body(llm_interpret_body)
+
+
+# ── Explain states ────────────────────────────────────────────────────────────
+
 def explain_leaderboard_body(session: Session) -> None:
+    _consume_llm_route(session)
     session.reply(LEADERBOARD_OVERVIEW)
 
 
@@ -461,6 +639,7 @@ explain_leaderboard_state.set_body(explain_leaderboard_body)
 
 
 def explain_methodology_body(session: Session) -> None:
+    _consume_llm_route(session)
     session.reply(METHODOLOGY_OVERVIEW)
 
 
@@ -468,9 +647,10 @@ explain_methodology_state.set_body(explain_methodology_body)
 
 
 def explain_metric_body(session: Session) -> None:
+    route = _consume_llm_route(session)
     try:
         msg = _get_user_message(session)
-        cat = extract_category(msg)
+        cat = route['category'] if route and route.get('category') else extract_category(msg)
         lower = msg.lower()
         if "cefr" in lower or "level" in lower or any(lv.lower() in lower for lv in ("a1", "a2", "b1", "b2", "c1", "c2")):
             level_reply = CEFR_EXPLANATION
@@ -493,27 +673,46 @@ def explain_metric_body(session: Session) -> None:
 explain_metric_state.set_body(explain_metric_body)
 
 
+# ── Lookup score ──────────────────────────────────────────────────────────────
+
 def lookup_score_body(session: Session) -> None:
     try:
         msg = _get_user_message(session)
         lang = _lang(session)
         all_names = _get_all_names()
 
-        level = extract_cefr_level(msg)
-        cat = extract_category(msg)
-        candidates = resolve_model_name(msg, all_names)
+        route = _consume_llm_route(session)
+        if route:
+            level      = route.get('cefr_level')
+            cat        = route.get('category')
+            candidates = route.get('models', [])
+        else:
+            level      = extract_cefr_level(msg)
+            cat        = extract_category(msg)
+            candidates = resolve_model_name(msg, all_names)
 
-        # LLM fallback when entity extraction is uncertain
-        if _llm and not candidates:
-            route = classify_with_llm(_llm, msg, 'lookup_score', candidates, all_names)
-            if route and route.get('models'):
-                candidates = route['models']
-            if route and not level and route.get('cefr_level'):
-                level = route['cefr_level']
-            if route and not cat and route.get('category'):
-                cat = route['category']
-            if route and route.get('needs_clarification'):
-                session.reply(_t('llm_needs_clarification', lang))
+            # Classical LLM fallback when entity extraction is uncertain
+            if _llm and not candidates:
+                fb = classify_with_llm(_llm, msg, 'lookup_score', candidates, all_names)
+                if fb:
+                    if fb.get('models'):
+                        candidates = fb['models']
+                    if not level and fb.get('cefr_level'):
+                        level = fb['cefr_level']
+                    if not cat and fb.get('category'):
+                        cat = fb['category']
+                    if fb.get('needs_clarification'):
+                        session.reply(_t('llm_needs_clarification', lang))
+                        return
+
+        # Clickable options when still ambiguous (works in both modes)
+        if len(candidates) > 1:
+            sent = _reply_options_if_ambiguous(
+                session, candidates,
+                pending_intent='lookup_score',
+                pending_cefr=level, pending_cat=cat,
+            )
+            if sent:
                 return
 
         # Handle "macro avg" / "overall" queries (no level needed)
@@ -535,10 +734,6 @@ def lookup_score_body(session: Session) -> None:
             if not candidates:
                 session.reply(_t('ask_model_name', lang, level='', cat='CEFR Totals'))
                 return
-            if len(candidates) > 1:
-                names_list = ", ".join(f"*{n}*" for n in candidates[:5])
-                session.reply(_t('ambiguous_model', lang, names=names_list))
-                return
             rows = lookup_all_cefr_totals(candidates[0])
             if not rows:
                 session.reply(_t('cefr_totals_not_found', lang, model=candidates[0]))
@@ -557,12 +752,6 @@ def lookup_score_body(session: Session) -> None:
             session.reply(_t('ask_model_name', lang, level=level, cat=cat))
             return
 
-        # Handle ambiguous match
-        if len(candidates) > 1:
-            names_list = ", ".join(f"*{n}*" for n in candidates[:5])
-            session.reply(_t('ambiguous_model', lang, names=names_list))
-            return
-
         result = lookup_score(candidates[0], level, cat)
         if result:
             session.reply(
@@ -578,22 +767,34 @@ def lookup_score_body(session: Session) -> None:
 lookup_score_state.set_body(lookup_score_body)
 
 
+# ── Rank models ───────────────────────────────────────────────────────────────
+
 def rank_models_body(session: Session) -> None:
     try:
         msg = _get_user_message(session)
         lang = _lang(session)
 
-        level = extract_cefr_level(msg)
-        cat = extract_category(msg)
-        top_n = extract_top_n(msg, default=5)
-        ascending = extract_ascending(msg)
-        licensing = extract_licensing(msg)
+        route = _consume_llm_route(session)
+        if route:
+            level     = route.get('cefr_level') or 'All'
+            cat       = route.get('category') or ('Macro' if level == 'All' else 'Total')
+            top_n     = route.get('top_n') or 5
+            ascending = bool(route.get('ascending', False))
+            licensing = None  # LLM doesn't extract licensing yet; fall through to entity extractor
+        else:
+            level = extract_cefr_level(msg)
+            cat   = extract_category(msg)
+            top_n = extract_top_n(msg, default=5)
+            ascending = extract_ascending(msg)
+            licensing = extract_licensing(msg)
 
-        # Default level/category — no level → Macro Average
-        if not level:
-            level = "All"
-        if not cat:
-            cat = "Macro" if level == "All" else "Total"
+            if not level:
+                level = "All"
+            if not cat:
+                cat = "Macro" if level == "All" else "Total"
+
+        if route:
+            licensing = extract_licensing(msg)  # always extract licensing from raw message
 
         rows = rank_models(level, cat, top_n=top_n, ascending=ascending, licensing=licensing)
 
@@ -621,25 +822,34 @@ def rank_models_body(session: Session) -> None:
 rank_models_state.set_body(rank_models_body)
 
 
+# ── Compare models ────────────────────────────────────────────────────────────
+
 def compare_models_body(session: Session) -> None:
     try:
         msg = _get_user_message(session)
         lang = _lang(session)
         all_names = _get_all_names()
 
-        level = extract_cefr_level(msg)
-        cat = extract_category(msg)
-        candidates = resolve_model_name(msg, all_names)
+        route = _consume_llm_route(session)
+        if route:
+            level      = route.get('cefr_level')
+            cat        = route.get('category')
+            candidates = route.get('models', [])
+        else:
+            level      = extract_cefr_level(msg)
+            cat        = extract_category(msg)
+            candidates = resolve_model_name(msg, all_names)
 
-        # LLM fallback when fewer than 2 candidates found
-        if _llm and len(candidates) < 2:
-            route = classify_with_llm(_llm, msg, 'compare_models', candidates, all_names)
-            if route and route.get('models') and len(route['models']) >= 2:
-                candidates = route['models']
-            if route and not level and route.get('cefr_level'):
-                level = route['cefr_level']
-            if route and not cat and route.get('category'):
-                cat = route['category']
+            # Classical LLM fallback when fewer than 2 candidates found
+            if _llm and len(candidates) < 2:
+                fb = classify_with_llm(_llm, msg, 'compare_models', candidates, all_names)
+                if fb:
+                    if fb.get('models') and len(fb['models']) >= 2:
+                        candidates = fb['models']
+                    if not level and fb.get('cefr_level'):
+                        level = fb['cefr_level']
+                    if not cat and fb.get('category'):
+                        cat = fb['category']
 
         if len(candidates) < 2:
             session.reply(_t('compare_need_two', lang))
@@ -687,12 +897,15 @@ def compare_models_body(session: Session) -> None:
 compare_models_state.set_body(compare_models_body)
 
 
+# ── Filter results ────────────────────────────────────────────────────────────
+
 def filter_results_body(session: Session) -> None:
     try:
         msg = _get_user_message(session)
+        route = _consume_llm_route(session)
 
-        level = extract_cefr_level(msg)
-        cat = extract_category(msg)
+        level     = (route.get('cefr_level') if route else None) or extract_cefr_level(msg)
+        cat       = (route.get('category')   if route else None) or extract_category(msg)
         licensing = extract_licensing(msg)
 
         # Detect family mentions (basic heuristic)
@@ -738,12 +951,14 @@ def filter_results_body(session: Session) -> None:
 filter_results_state.set_body(filter_results_body)
 
 
+# ── Reset view ────────────────────────────────────────────────────────────────
+
 def reset_view_body(session: Session) -> None:
     try:
         msg = _get_user_message(session)
         lower = msg.lower()
+        _consume_llm_route(session)
 
-        # Detect selective reset
         fields = []
         if "cefr" in lower or "level" in lower:
             fields.append("cefrLevel")
@@ -770,12 +985,14 @@ def reset_view_body(session: Session) -> None:
 reset_view_state.set_body(reset_view_body)
 
 
+# ── Data coverage ─────────────────────────────────────────────────────────────
+
 def data_coverage_body(session: Session) -> None:
     try:
         msg = _get_user_message(session)
         all_names = _get_all_names()
+        _consume_llm_route(session)
 
-        # Check if asking about a specific model
         candidates = resolve_model_name(msg, all_names)
         if candidates and any(kw in msg.lower() for kw in ("include", "in the", "listed", "appear", "is model")):
             matches = [n for n in candidates if n.lower() in msg.lower() or any(
@@ -813,7 +1030,10 @@ def data_coverage_body(session: Session) -> None:
 data_coverage_state.set_body(data_coverage_body)
 
 
+# ── Out of scope ──────────────────────────────────────────────────────────────
+
 def out_of_scope_body(session: Session) -> None:
+    _consume_llm_route(session)
     session.reply(_t('out_of_scope', _lang(session)))
 
 

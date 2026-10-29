@@ -1,1 +1,34 @@
+# Environment
 .env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Logs
+*.log
+application.log
+
+# Evaluation outputs (CSV results; README.md inside is tracked)
+agent/evaluation_results/*.csv
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+
+# Screenshots / temporary media at repo root
+/*.png
+/*.jpg
+/*.jpeg
+/Screenshot*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

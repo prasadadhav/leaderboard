@@ -5,3 +5,4 @@ besser-agentic-framework==4.5.0
 torch>=2.0.0          # CPU build sufficient; already installed in besser-demo venv
 scikit-learn>=1.0.0   # Already installed in besser-demo venv
 openai>=1.0.0         # Required by BAF LLMOpenAI (provider=openai)
+websockets==11.0.3    # Pinned by besser-agentic-framework==4.5.0; also used by evaluation_runner.py
