@@ -1,7 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "../contexts/ThemeContext";
 
+// ── Customization constants ────────────────────────────────────────────────
+const AGENT_TITLE      = "LëtzEval Assistant";
+const FAB_SIZE         = 64;          // px — floating action button diameter
+const PANEL_WIDTH      = 360;         // px
+const PANEL_HEIGHT     = 480;         // px
+const RETRY_DELAY_MS   = 5000;        // ms between reconnect attempts
+const BAF_LOGO_SRC     = "/img/baf_logo_dark.svg";  // works on both themes
 const UI_ACTION_PREFIX = "__UI_ACTION__";
+// ──────────────────────────────────────────────────────────────────────────
 
 interface ChatMessage {
   text: string;
@@ -23,18 +32,33 @@ function renderMarkdown(text: string): string {
 
 export const AgentComponent: React.FC = () => {
   const { colors } = useTheme();
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
+  const { i18n } = useTranslation();
+
+  const [isOpen, setIsOpen]           = useState(false);
+  const [messages, setMessages]       = useState<ChatMessage[]>([]);
+  const [input, setInput]             = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
-  const retryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const wsRef        = useRef<WebSocket | null>(null);
+  const retryRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
   const unmountedRef = useRef(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef     = useRef<HTMLInputElement>(null);
 
   const agentUrl = import.meta.env.VITE_AGENT_URL || "ws://localhost:8765";
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
+  const sendLang = (ws: WebSocket, lang: string) => {
+    if (ws.readyState !== WebSocket.OPEN) return;
+    ws.send(JSON.stringify({
+      action: "user_set_variable",
+      message: { ui_language: lang },
+    }));
+  };
+
+  // ── WebSocket lifecycle ──────────────────────────────────────────────────
 
   const connect = () => {
     if (unmountedRef.current) return;
@@ -49,6 +73,8 @@ export const AgentComponent: React.FC = () => {
         if (unmountedRef.current) { ws.close(); return; }
         setIsConnected(true);
         setIsConnecting(false);
+        // Immediately tell the agent which language the UI is in
+        sendLang(ws, i18n.language);
       };
 
       ws.onmessage = (event) => {
@@ -95,15 +121,14 @@ export const AgentComponent: React.FC = () => {
       ws.onclose = () => {
         setIsConnected(false);
         setIsConnecting(false);
-        // Auto-retry every 5 s while component is mounted
         if (!unmountedRef.current) {
-          retryRef.current = setTimeout(connect, 5000);
+          retryRef.current = setTimeout(connect, RETRY_DELAY_MS);
         }
       };
     } catch {
       setIsConnecting(false);
       if (!unmountedRef.current) {
-        retryRef.current = setTimeout(connect, 5000);
+        retryRef.current = setTimeout(connect, RETRY_DELAY_MS);
       }
     }
   };
@@ -119,6 +144,14 @@ export const AgentComponent: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [agentUrl]);
 
+  // Notify the agent whenever the UI language changes (while connected)
+  useEffect(() => {
+    if (wsRef.current && isConnected) {
+      sendLang(wsRef.current, i18n.language);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18n.language, isConnected]);
+
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -126,11 +159,22 @@ export const AgentComponent: React.FC = () => {
     }
   }, [messages, isOpen]);
 
+  // ── Actions ──────────────────────────────────────────────────────────────
+
   const sendMessage = () => {
     if (!input.trim() || !wsRef.current || !isConnected) return;
     setMessages((prev) => [...prev, { text: input, sender: "user" }]);
     wsRef.current.send(JSON.stringify({ action: "user_message", message: input }));
     setInput("");
+  };
+
+  const resetChat = () => {
+    if (!wsRef.current || !isConnected) return;
+    // BAF 4.5.0 reset payload: clears session state server-side
+    wsRef.current.send(JSON.stringify({ action: "reset", message: null }));
+    setMessages([]);
+    // Re-send language so the new session knows the UI language immediately
+    sendLang(wsRef.current, i18n.language);
   };
 
   const onKey = (e: React.KeyboardEvent) => {
@@ -142,7 +186,7 @@ export const AgentComponent: React.FC = () => {
 
   const dot = isConnected ? "#22c55e" : isConnecting ? "#f59e0b" : "#ef4444";
 
-  // ── Floating launcher button ──────────────────────────────────────────────
+  // ── Styles ───────────────────────────────────────────────────────────────
 
   const launcherStyle: React.CSSProperties = {
     position: "fixed",
@@ -156,8 +200,8 @@ export const AgentComponent: React.FC = () => {
   };
 
   const fabStyle: React.CSSProperties = {
-    width: 52,
-    height: 52,
+    width: FAB_SIZE,
+    height: FAB_SIZE,
     borderRadius: "50%",
     backgroundColor: colors.accent,
     border: "none",
@@ -167,11 +211,12 @@ export const AgentComponent: React.FC = () => {
     justifyContent: "center",
     boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
     flexShrink: 0,
+    padding: 0,
   };
 
   const panelStyle: React.CSSProperties = {
-    width: 360,
-    height: 480,
+    width: PANEL_WIDTH,
+    height: PANEL_HEIGHT,
     borderRadius: 16,
     backgroundColor: colors.surface,
     border: `1px solid ${colors.border}`,
@@ -244,6 +289,19 @@ export const AgentComponent: React.FC = () => {
     flexShrink: 0,
   };
 
+  const iconBtnStyle: React.CSSProperties = {
+    background: "none",
+    border: "none",
+    cursor: isConnected ? "pointer" : "not-allowed",
+    color: colors.textMuted,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 4,
+    borderRadius: 6,
+    opacity: isConnected ? 1 : 0.45,
+  };
+
   return (
     <div style={launcherStyle}>
       {isOpen && (
@@ -258,27 +316,40 @@ export const AgentComponent: React.FC = () => {
                   borderRadius: "50%",
                   backgroundColor: dot,
                   display: "inline-block",
+                  flexShrink: 0,
                 }}
               />
               <span style={{ fontWeight: 600, fontSize: 14, color: colors.textPrimary }}>
-                LëtzEval Assistant
+                {AGENT_TITLE}
               </span>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                color: colors.textMuted,
-                fontSize: 18,
-                lineHeight: 1,
-                padding: 2,
-              }}
-              aria-label="Close chat"
-            >
-              ✕
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              {/* Reset button */}
+              <button
+                onClick={resetChat}
+                disabled={!isConnected}
+                style={iconBtnStyle}
+                title="Reset conversation"
+                aria-label="Reset conversation"
+              >
+                {/* Rotate-CCW icon */}
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="1 4 1 10 7 10" />
+                  <path d="M3.51 15a9 9 0 1 0 .49-4.51" />
+                </svg>
+              </button>
+              {/* Close button */}
+              <button
+                onClick={() => setIsOpen(false)}
+                style={{ ...iconBtnStyle, opacity: 1, cursor: "pointer" }}
+                aria-label="Close chat"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -334,23 +405,25 @@ export const AgentComponent: React.FC = () => {
         </div>
       )}
 
-      {/* FAB */}
+      {/* FAB — BAF logo when closed, chevron-down when open */}
       <button
         style={fabStyle}
         onClick={() => setIsOpen((o) => !o)}
         aria-label={isOpen ? "Close assistant" : "Open assistant"}
-        title="LëtzEval Assistant"
+        title={AGENT_TITLE}
       >
         {isOpen ? (
-          // Down arrow / close indicator
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         ) : (
-          // Chat bubble icon
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
+          <img
+            src={BAF_LOGO_SRC}
+            alt="BAF"
+            width={36}
+            height={36}
+            style={{ display: "block" }}
+          />
         )}
       </button>
     </div>

@@ -1,6 +1,7 @@
 import React, { CSSProperties, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { useTableContext } from "../../contexts/TableContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { ColumnFilter } from "./ColumnFilter";
@@ -81,6 +82,7 @@ export const TableComponent: React.FC<Props> = ({
   dataBinding,
 }) => {
   const { colors } = useTheme();
+  const { t } = useTranslation("common");
 
   // Local state for table data
   const [tableData, setTableData] = useState<any[]>(data ?? []);
@@ -607,7 +609,7 @@ export const TableComponent: React.FC<Props> = ({
               gap: '6px',
             }}
             type="button"
-            title={`Add ${dataBinding?.entity || 'Register'}`}
+            title={dataBinding?.entity ? t("table.add", { entity: dataBinding.entity }) : t("table.addDefault")}
             onClick={() => {
               setModalMode('add');
               setEditRowData(null);
@@ -619,7 +621,7 @@ export const TableComponent: React.FC<Props> = ({
               <rect x="9" y="5.5" width="2" height="9" rx="1" fill="white"/>
               <rect x="5.5" y="9" width="9" height="2" rx="1" fill="white"/>
             </svg>
-            {`Add ${dataBinding?.entity || 'Register'}`}
+            {dataBinding?.entity ? t("table.add", { entity: dataBinding.entity }) : t("table.addDefault")}
           </button>
         </div>
       )}
@@ -659,7 +661,9 @@ export const TableComponent: React.FC<Props> = ({
             }}
             >
               <h4 style={{ margin: 0, marginBottom: "18px", color: "#1e293b" }}>
-                {modalMode === 'edit' ? `Edit ${dataBinding?.entity || 'Register'}` : `Add ${dataBinding?.entity || 'Register'}`}
+                {modalMode === 'edit'
+                  ? (dataBinding?.entity ? t("table.edit", { entity: dataBinding.entity }) : t("table.editDefault"))
+                  : (dataBinding?.entity ? t("table.add", { entity: dataBinding.entity }) : t("table.addDefault"))}
               </h4>
               {validationError && (
                 <div style={{
@@ -704,7 +708,7 @@ export const TableComponent: React.FC<Props> = ({
                   });
                   
                   if (missingFields.length > 0) {
-                    setValidationError(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+                    setValidationError(t("table.requiredFields", { fields: missingFields.join(', ') }));
                     return;
                   }
                   
@@ -780,10 +784,10 @@ export const TableComponent: React.FC<Props> = ({
                         } else if (err.response.data?.message) {
                           setValidationError(err.response.data.message);
                         } else {
-                          setValidationError('Failed to save. Please check your input.');
+                          setValidationError(t("table.saveFailed"));
                         }
                       } else {
-                        setValidationError('Network error. Please try again.');
+                        setValidationError(t("table.networkError"));
                       }
                       return; // Keep modal open on error
                     }
@@ -814,10 +818,10 @@ export const TableComponent: React.FC<Props> = ({
                         } else if (err.response.data?.message) {
                           setValidationError(err.response.data.message);
                         } else {
-                          setValidationError('Failed to update. Please check your input.');
+                          setValidationError(t("table.updateFailed"));
                         }
                       } else {
-                        setValidationError('Network error. Please try again.');
+                        setValidationError(t("table.networkError"));
                       }
                       return; // Keep modal open on error
                     }
@@ -868,7 +872,7 @@ export const TableComponent: React.FC<Props> = ({
                           }}>
                             {options.length === 0 ? (
                               <div style={{ padding: "8px", color: "#64748b", fontSize: "14px" }}>
-                                No options available
+                                {t("table.noOptions")}
                               </div>
                             ) : (
                               options.map((option: any) => {
@@ -1051,7 +1055,7 @@ export const TableComponent: React.FC<Props> = ({
                       fontWeight: 500,
                       cursor: "pointer",
                     }}
-                  >Cancel</button>
+                  >{t("table.cancel")}</button>
                   <button
                     type="submit"
                     style={{
@@ -1063,7 +1067,7 @@ export const TableComponent: React.FC<Props> = ({
                       fontWeight: 700,
                       cursor: "pointer",
                     }}
-                  >Save</button>
+                  >{t("table.save")}</button>
                 </div>
               </form>
               <button
@@ -1239,7 +1243,7 @@ export const TableComponent: React.FC<Props> = ({
                             alignItems: "center",
                           }}
                           type="button"
-                          title="Edit"
+                          title={t("table.editTitle")}
                           onClick={() => {
                             setModalMode('edit');
                             setEditRowData(row);
@@ -1298,10 +1302,10 @@ export const TableComponent: React.FC<Props> = ({
           }}
         >
           <span>
-            Showing {visibleRows.length} of {sortedAndFilteredRows.length} rows
+            {t("table.showing", { visible: visibleRows.length, total: sortedAndFilteredRows.length })}
             {Object.keys(columnFilters).length > 0 && (
               <span style={{ color: colors.accent, marginLeft: "4px" }}>
-                (filtered from {normalizedRows.length})
+                ({t("table.filtered")} {normalizedRows.length})
               </span>
             )}
           </span>
@@ -1321,10 +1325,10 @@ export const TableComponent: React.FC<Props> = ({
                 fontWeight: 500,
               }}
             >
-              Prev
+              {t("table.prev")}
             </button>
             <span style={{ color: colors.textSecondary }}>
-              Page {currentPage} of {totalPages}
+              {t("table.page", { current: currentPage, total: totalPages })}
             </span>
             <button
               type="button"
@@ -1343,7 +1347,7 @@ export const TableComponent: React.FC<Props> = ({
                 fontWeight: 500,
               }}
             >
-              Next
+              {t("table.next")}
             </button>
           </div>
         </div>

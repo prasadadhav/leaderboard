@@ -11,7 +11,9 @@ import {
   YAxis,
 } from "recharts";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import { ModelFilterPanel, ModelFilters } from "./ModelFilterPanel";
+import { getSampleCount } from "../../data/sampleCounts";
 import { useTheme } from "../../contexts/ThemeContext";
 
 interface ModelMetric {
@@ -58,12 +60,14 @@ const cefrBaselines: Record<string, number> = {
 
 export const ModelMetricsBarChart: React.FC<Props> = ({
   id,
-  title = "Model Performance Metrics",
+  title,
   styles,
   maxModels = 15,
 }) => {
   const { colors, theme } = useTheme();
+  const { t } = useTranslation("leaderboard");
   const isDark = theme === "dark";
+  const resolvedTitle = title ?? t("chart.title");
 
   const [plotMode, setPlotMode] = useState<"simple" | "detailed">("simple");
   const [allData, setAllData] = useState<ModelMetric[]>([]);
@@ -137,10 +141,12 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     };
   }, []);
 
+  // Auto-switch plot mode when CEFR / category filters change.
+  // Activating either filter → Detailed; resetting both → Simple.
   useEffect(() => {
-    if (filters.cefrLevel !== "All" || filters.testCategory !== "All") {
-      setPlotMode("detailed");
-    }
+    const hasFilter =
+      filters.cefrLevel !== "All" || filters.testCategory !== "All";
+    setPlotMode(hasFilter ? "detailed" : "simple");
   }, [filters.cefrLevel, filters.testCategory]);
 
   useEffect(() => {
@@ -219,6 +225,11 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     setFilteredData(filtered);
   }, [allData, filters, maxModels, plotMode]);
 
+  const subtitleSampleCount =
+    plotMode === "simple"
+      ? 629
+      : getSampleCount(filters.cefrLevel, filters.testCategory);
+
   const containerStyle: CSSProperties = {
     width: "100%",
     maxWidth: "100%",
@@ -234,7 +245,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
   const chartContainerStyle: CSSProperties = {
     width: "100%",
-    height: "500px",
+    height: "520px",
     marginTop: "24px",
   };
 
@@ -242,7 +253,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     return (
       <div id={id} style={containerStyle}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>
-          <p style={{ color: colors.textMuted }}>Loading metrics...</p>
+          <p style={{ color: colors.textMuted }}>{t("chart.loading")}</p>
         </div>
       </div>
     );
@@ -252,7 +263,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     return (
       <div id={id} style={containerStyle}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "400px" }}>
-          <p style={{ color: "#ef4444" }}>{error}</p>
+          <p style={{ color: "#ef4444" }}>{t("chart.error")}</p>
         </div>
       </div>
     );
@@ -268,14 +279,14 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
   const metricNameSuffix =
     filters.testCategory === "All" || filters.testCategory === "Total"
-      ? "Total"
+      ? t("chart.metricNames.total")
       : filters.testCategory === "Vocab"
-        ? "Vocabulary"
+        ? t("chart.metricNames.vocabulary")
         : filters.testCategory === "RC"
-          ? "Reading Comprehension"
+          ? t("chart.metricNames.readingComprehension")
           : filters.testCategory === "LC"
-            ? "Listening Comprehension"
-            : "Grammar";
+            ? t("chart.metricNames.listeningComprehension")
+            : t("chart.metricNames.grammar");
 
   const getMetricLabel = (level: string) => `${level} ${metricNameSuffix}`;
 
@@ -296,8 +307,8 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
       />
 
       <div style={chartContainerStyle}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
-          {title ? (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+          {resolvedTitle ? (
             <h3 style={{
               margin: 0,
               fontSize: "1.25rem",
@@ -305,14 +316,14 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
               color: colors.textPrimary,
               letterSpacing: "-0.01em",
             }}>
-              {title}
+              {resolvedTitle}
               <span style={{
                 fontSize: "0.875rem",
                 fontWeight: 400,
                 color: colors.textMuted,
                 marginLeft: "10px"
               }}>
-                ({filteredData.length} models)
+                ({t("chart.modelsCount", { count: filteredData.length })})
               </span>
             </h3>
           ) : <span />}
@@ -342,15 +353,22 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
                   textTransform: "capitalize",
                 }}
               >
-                {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                {t(`chart.plotMode.${mode}`)}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Sample count subtitle */}
+        <p style={{ margin: "0 0 10px 0", fontSize: "0.8rem", color: colors.textMuted, fontWeight: 500 }}>
+          {plotMode === "simple"
+            ? t("chart.questionCount", { n: 629 })
+            : `${filters.cefrLevel === "All" ? t("filters.all") : filters.cefrLevel} · ${metricNameSuffix} · ${t("chart.questionCount", { n: subtitleSampleCount })}`}
+        </p>
+
         {filteredData.length === 0 ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80%" }}>
-            <p style={{ color: colors.textMuted }}>No models match the selected filters</p>
+            <p style={{ color: colors.textMuted }}>{t("chart.noModels")}</p>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="90%">
@@ -369,7 +387,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
                 stroke={colors.chartAxis}
               />
               <YAxis
-                label={{ value: "Score", angle: -90, position: "insideLeft", style: { fill: colors.chartAxis } }}
+                label={{ value: t("chart.score"), angle: -90, position: "insideLeft", style: { fill: colors.chartAxis } }}
                 tick={{ fill: colors.chartAxis }}
                 stroke={colors.chartAxis}
               />
@@ -411,29 +429,29 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
               {plotMode === "simple" ? (
                 <Bar
                   dataKey="macro_avg"
-                  name="Macro Avg."
+                  name={`Macro Average (n=629)`}
                   fill={metricColors.macro_avg}
                   radius={[4, 4, 0, 0]}
                 />
               ) : (
                 <>
                   {visibleMetrics.includes("a1_total") && (
-                    <Bar dataKey="a1_total" name={getMetricLabel("A1")} fill={metricColors.a1_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="a1_total" name={`${getMetricLabel("A1")} (n=${getSampleCount("A1", filters.testCategory)})`} fill={metricColors.a1_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("a2_total") && (
-                    <Bar dataKey="a2_total" name={getMetricLabel("A2")} fill={metricColors.a2_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="a2_total" name={`${getMetricLabel("A2")} (n=${getSampleCount("A2", filters.testCategory)})`} fill={metricColors.a2_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("b1_total") && (
-                    <Bar dataKey="b1_total" name={getMetricLabel("B1")} fill={metricColors.b1_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="b1_total" name={`${getMetricLabel("B1")} (n=${getSampleCount("B1", filters.testCategory)})`} fill={metricColors.b1_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("b2_total") && (
-                    <Bar dataKey="b2_total" name={getMetricLabel("B2")} fill={metricColors.b2_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="b2_total" name={`${getMetricLabel("B2")} (n=${getSampleCount("B2", filters.testCategory)})`} fill={metricColors.b2_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("c1_total") && (
-                    <Bar dataKey="c1_total" name={getMetricLabel("C1")} fill={metricColors.c1_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="c1_total" name={`${getMetricLabel("C1")} (n=${getSampleCount("C1", filters.testCategory)})`} fill={metricColors.c1_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("c2_total") && (
-                    <Bar dataKey="c2_total" name={getMetricLabel("C2")} fill={metricColors.c2_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="c2_total" name={`${getMetricLabel("C2")} (n=${getSampleCount("C2", filters.testCategory)})`} fill={metricColors.c2_total} radius={[4, 4, 0, 0]} />
                   )}
                 </>
               )}

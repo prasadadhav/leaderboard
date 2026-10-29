@@ -1,0 +1,76 @@
+{
+  "theme": {
+    "switchToLight": "Op hell Modus wiesselen",
+    "switchToDark": "Op donkel Modus wiesselen",
+    "light": "Hell",
+    "dark": "Donkel"
+  },
+  "footer": {
+    "privacy": "Dateschutz",
+    "terms": "Konditiounen",
+    "contact": "Kontakt",
+    "designedWith": "Designt mat"
+  },
+  "table": {
+    "loading": "Donnéeën ginn gelueden...",
+    "error": "Feelert beim Lueden vun den Donnéeën",
+    "add": "{{entity}} bäifügen",
+    "addDefault": "Entrée bäifügen",
+    "edit": "{{entity}} änneren",
+    "editDefault": "Entrée änneren",
+    "cancel": "Ofbriechen",
+    "save": "Späicheren",
+    "prev": "Viregt",
+    "next": "Nächst",
+    "page": "Säit {{current}} vun {{total}}",
+    "showing": "{{visible}} vun {{total}} Zeilen ginn gewisen",
+    "filtered": "gefilter",
+    "noOptions": "Keng Optiounen disponibel",
+    "editTitle": "Änneren",
+    "requiredFields": "Wann ech gelift déi folgend Felder ausfëllen: {{fields}}",
+    "saveFailed": "Späicheren ass net gelongen. Iwwerpréift Är Ënnergab.",
+    "updateFailed": "Aktualiséieren ass net gelongen. Iwwerpréift Är Ënnergab.",
+    "networkError": "Netzwierkfehler. Versicht nach eng Kéier."
+  },
+  "filter": {
+    "buttonTitle": "Kolonn filteren",
+    "title": "{{column}} filteren",
+    "operator": "Operator",
+    "value": "Wäert",
+    "clear": "Läschen",
+    "apply": "Uwenden",
+    "placeholder": "{{type}} Wäert aginn...",
+    "selectPlaceholder": "Wielt...",
+    "true": "Jo",
+    "false": "Nee",
+    "operators": {
+      "contains": "enthält",
+      "equals": "gläich",
+      "startsWith": "fänkt un mat",
+      "endsWith": "endt mat",
+      "isEmpty": "ass eidel",
+      "isNotEmpty": "ass net eidel",
+      "eq": "= (gläich)",
+      "ne": "≠ (net gläich)",
+      "gt": "> (méi grouss wéi)",
+      "gte": "≥ (méi grouss oder gläich)",
+      "lt": "< (méi kleng wéi)",
+      "lte": "≤ (méi kleng oder gläich)"
+    }
+  },
+  "sort": {
+    "ascending": "Opsteigend sortéieren",
+    "descending": "Ofsteigend sortéieren"
+  },
+  "language": {
+    "selectLanguage": "Sprooch wielen",
+    "languages": {
+      "en": "English",
+      "lb": "Lëtzebuergesch",
+      "fr": "Français",
+      "de": "Deutsch",
+      "it": "Italiano",
+      "pt": "Português"
+    }
+  }
+}
