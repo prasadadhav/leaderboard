@@ -28,6 +28,7 @@
     "noModels": "No models match the selected filters",
     "score": "Score",
     "modelsCount": "{{count}} models",
+    "questionCount": "{{n}} questions",
     "plotMode": {
       "simple": "Simple",
       "detailed": "Detailed"

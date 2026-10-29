@@ -28,6 +28,7 @@
     "noModels": "Keng Modeller entspriechen de gewielten Filteren",
     "score": "Score",
     "modelsCount": "{{count}} Modeller",
+    "questionCount": "{{n}} Fragen",
     "plotMode": {
       "simple": "Einfach",
       "detailed": "Detailléiert"

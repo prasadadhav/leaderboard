@@ -28,6 +28,7 @@
     "noModels": "Nenhum modelo corresponde aos filtros selecionados",
     "score": "Pontuação",
     "modelsCount": "{{count}} modelos",
+    "questionCount": "{{n}} perguntas",
     "plotMode": {
       "simple": "Simples",
       "detailed": "Detalhado"

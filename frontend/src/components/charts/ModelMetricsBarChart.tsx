@@ -187,16 +187,10 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     setFilteredData(filtered);
   }, [allData, filters, maxModels, plotMode]);
 
-  // Compute sample count visibility before styles (used in chartContainerStyle + XAxis).
-  const activeSampleCount =
+  const subtitleSampleCount =
     plotMode === "simple"
       ? 629
       : getSampleCount(filters.cefrLevel, filters.testCategory);
-
-  const showSampleCount =
-    plotMode === "simple" ||
-    filters.cefrLevel !== "All" ||
-    filters.testCategory !== "All";
 
   const containerStyle: CSSProperties = {
     width: "100%",
@@ -213,7 +207,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
   const chartContainerStyle: CSSProperties = {
     width: "100%",
-    height: showSampleCount ? "540px" : "500px",
+    height: "520px",
     marginTop: "24px",
   };
 
@@ -258,9 +252,6 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
   const getMetricLabel = (level: string) => `${level} ${metricNameSuffix}`;
 
-  const xAxisTickFormatter = (name: string) =>
-    showSampleCount ? `${name} (n=${activeSampleCount})` : name;
-
   return (
     <div id={id} style={containerStyle}>
       <ModelFilterPanel
@@ -278,7 +269,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
       />
 
       <div style={chartContainerStyle}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
           {resolvedTitle ? (
             <h3 style={{
               margin: 0,
@@ -330,6 +321,13 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
           </div>
         </div>
 
+        {/* Sample count subtitle */}
+        <p style={{ margin: "0 0 10px 0", fontSize: "0.8rem", color: colors.textMuted, fontWeight: 500 }}>
+          {plotMode === "simple"
+            ? t("chart.questionCount", { n: 629 })
+            : `${filters.cefrLevel === "All" ? t("filters.all") : filters.cefrLevel} · ${metricNameSuffix} · ${t("chart.questionCount", { n: subtitleSampleCount })}`}
+        </p>
+
         {filteredData.length === 0 ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80%" }}>
             <p style={{ color: colors.textMuted }}>{t("chart.noModels")}</p>
@@ -345,11 +343,10 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
                 dataKey="name"
                 angle={-45}
                 textAnchor="end"
-                height={showSampleCount ? 110 : 80}
+                height={80}
                 interval={0}
                 tick={{ fontSize: 11, fill: colors.chartAxis }}
                 stroke={colors.chartAxis}
-                tickFormatter={xAxisTickFormatter}
               />
               <YAxis
                 label={{ value: t("chart.score"), angle: -90, position: "insideLeft", style: { fill: colors.chartAxis } }}
@@ -394,29 +391,29 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
               {plotMode === "simple" ? (
                 <Bar
                   dataKey="macro_avg"
-                  name="Macro Avg."
+                  name={`Macro Average (n=629)`}
                   fill={metricColors.macro_avg}
                   radius={[4, 4, 0, 0]}
                 />
               ) : (
                 <>
                   {visibleMetrics.includes("a1_total") && (
-                    <Bar dataKey="a1_total" name={getMetricLabel("A1")} fill={metricColors.a1_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="a1_total" name={`${getMetricLabel("A1")} (n=${getSampleCount("A1", filters.testCategory)})`} fill={metricColors.a1_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("a2_total") && (
-                    <Bar dataKey="a2_total" name={getMetricLabel("A2")} fill={metricColors.a2_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="a2_total" name={`${getMetricLabel("A2")} (n=${getSampleCount("A2", filters.testCategory)})`} fill={metricColors.a2_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("b1_total") && (
-                    <Bar dataKey="b1_total" name={getMetricLabel("B1")} fill={metricColors.b1_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="b1_total" name={`${getMetricLabel("B1")} (n=${getSampleCount("B1", filters.testCategory)})`} fill={metricColors.b1_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("b2_total") && (
-                    <Bar dataKey="b2_total" name={getMetricLabel("B2")} fill={metricColors.b2_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="b2_total" name={`${getMetricLabel("B2")} (n=${getSampleCount("B2", filters.testCategory)})`} fill={metricColors.b2_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("c1_total") && (
-                    <Bar dataKey="c1_total" name={getMetricLabel("C1")} fill={metricColors.c1_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="c1_total" name={`${getMetricLabel("C1")} (n=${getSampleCount("C1", filters.testCategory)})`} fill={metricColors.c1_total} radius={[4, 4, 0, 0]} />
                   )}
                   {visibleMetrics.includes("c2_total") && (
-                    <Bar dataKey="c2_total" name={getMetricLabel("C2")} fill={metricColors.c2_total} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="c2_total" name={`${getMetricLabel("C2")} (n=${getSampleCount("C2", filters.testCategory)})`} fill={metricColors.c2_total} radius={[4, 4, 0, 0]} />
                   )}
                 </>
               )}
