@@ -242,3 +242,102 @@ def resolve_model_name(
 
     # Otherwise return all candidates above threshold (up to max_candidates)
     return [name for _, name in scored[:max_candidates]]
+
+
+# ---------------------------------------------------------------------------
+# Query-aware candidate retrieval (for LLM routing)
+# ---------------------------------------------------------------------------
+
+# Tokens that are never meaningful as model family identifiers.
+_RETRIEVAL_SKIP_TOKENS: frozenset = frozenset({
+    'the', 'for', 'and', 'all', 'top', 'best', 'worst', 'show', 'list', 'give', 'me',
+    'what', 'how', 'who', 'get', 'are', 'with', 'this', 'that', 'from', 'model', 'models',
+    'score', 'scores', 'result', 'results', 'rank', 'ranking', 'compare', 'filter', 'reset',
+    'is', 'its', 'at', 'in', 'on', 'of', 'a', 'b', 'c',
+    'b1', 'b2', 'c1', 'c2', 'a1', 'a2',
+    'grammar', 'vocab', 'vocabulary', 'total', 'macro', 'reading', 'listening', 'comprehension',
+    'average', 'level', 'levels', 'leaderboard', 'open', 'source', 'proprietary', 'cefr',
+    'was', 'ist', 'der', 'die', 'das', 'von', 'des',   # German stopwords
+    'quel', 'est', 'les', 'des', 'du',                  # French stopwords
+    'qual', 'sao', 'nos', 'dos', 'das',                 # Portuguese stopwords
+})
+
+
+def retrieve_candidates(
+    message: str,
+    all_names: list[str],
+    limit: int = 12,
+) -> list[str]:
+    """Query-aware candidate retrieval over the full model catalog.
+
+    Combines two strategies so that the LLM interpreter always sees
+    *relevant* model names rather than an arbitrary alphabetical first-N slice:
+
+    1. **Direct fuzzy match** via ``resolve_model_name`` — finds models whose
+       normalized name appears in or closely resembles the query.
+
+    2. **Family-prefix expansion** — extracts significant tokens from the
+       query (minimum 3 chars, not a stopword) and checks if any of them
+       match the *first normalized token* of a DB model name (the family
+       name: "llama", "gemma", "qwen", "phi", "mistral", …).  This surfaces
+       all size/version variants of a mentioned family.
+
+    The two result sets are merged, de-duplicated, and truncated to ``limit``
+    entries.  Direct fuzzy matches appear first (highest relevance).
+
+    Args:
+        message:   The user's raw or sanitized input text.
+        all_names: Full list of canonical model names from the DB.
+        limit:     Maximum number of names to return (default 12).
+
+    Returns:
+        A de-duplicated list of at most ``limit`` canonical DB names.
+        Never returns an arbitrary alphabetical first-N slice.
+    """
+    if not all_names or not message:
+        return []
+
+    # -- Step 1: direct fuzzy / exact matching ----------------------------
+    fuzzy = resolve_model_name(message, all_names, max_candidates=limit)
+    seen: set[str] = set(fuzzy)
+    result: list[str] = list(fuzzy)
+
+    if len(result) >= limit:
+        return result[:limit]
+
+    # -- Step 2: family-prefix expansion ----------------------------------
+    norm_q = _normalize(message)
+    query_tokens = [
+        t for t in norm_q.split()
+        if len(t) >= 3 and t not in _RETRIEVAL_SKIP_TOKENS
+    ]
+
+    if not query_tokens:
+        return result[:limit]
+
+    for name in all_names:
+        if name in seen:
+            continue
+        norm_name = _normalize(name)
+        name_parts = norm_name.split()
+        if not name_parts:
+            continue
+        first = name_parts[0]  # family token: "llama", "gemma", "phi", "qwen", …
+        if len(first) < 2:
+            continue
+        for qt in query_tokens:
+            # Match if the family token equals the query token, or one is a
+            # prefix of the other (minimum meaningful length = 3 chars).
+            if (
+                first == qt
+                or (len(first) >= 3 and qt.startswith(first))
+                or (len(qt) >= 3 and first.startswith(qt))
+            ):
+                result.append(name)
+                seen.add(name)
+                break  # one match per DB name is enough
+
+        if len(result) >= limit:
+            break
+
+    return result[:limit]

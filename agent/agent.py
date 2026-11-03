@@ -66,6 +66,7 @@ from intents.entity_utils import (
     extract_licensing,
     extract_top_n,
     resolve_model_name,
+    retrieve_candidates,
 )
 from intents.responses import (
     CEFR_EXPLANATION,
@@ -89,6 +90,26 @@ if AGENT_MODE not in ('classical', 'llm'):
     AGENT_MODE = 'classical'
 
 logging.info("Agent mode: %s", AGENT_MODE)
+
+# Debug telemetry (never exposed in production chat; no SQL leaked)
+# Set LETZEVAL_DEBUG_TELEMETRY=1 and optionally LETZEVAL_TELEMETRY_FILE=path
+# to append one JSONL record per LLM routing call to the given file.
+_DEBUG_TELEMETRY: bool = os.environ.get('LETZEVAL_DEBUG_TELEMETRY', '').lower() in ('1', 'true')
+_TELEMETRY_FILE: str = os.environ.get(
+    'LETZEVAL_TELEMETRY_FILE',
+    os.path.join(os.path.dirname(__file__), 'evaluation_results', 'telemetry.jsonl'),
+)
+
+
+def _write_telemetry(record: dict) -> None:
+    """Append one JSONL record to the telemetry file (debug-only)."""
+    try:
+        os.makedirs(os.path.dirname(os.path.abspath(_TELEMETRY_FILE)), exist_ok=True)
+        with open(_TELEMETRY_FILE, 'a', encoding='utf-8') as _tf:
+            _tf.write(json.dumps(record, default=str) + '\n')
+    except Exception as _te:
+        logging.debug("Telemetry write failed: %s", _te)
+
 
 # ---------------------------------------------------------------------------
 # Training sentences (20 per intent, from intents_train.csv)
@@ -592,7 +613,25 @@ def llm_interpret_body(session: Session) -> None:
 
     # Sanitize and route via LLM
     sanitized = _sanitize_input(msg)
-    route = classify_with_llm(_llm, sanitized, None, all_names[:20], all_names)
+
+    # Build a query-aware candidate shortlist (never an arbitrary alphabetical first-N)
+    candidates = retrieve_candidates(sanitized, all_names)
+
+    # Optional debug telemetry (LETZEVAL_DEBUG_TELEMETRY=1 to enable)
+    capture: dict = {} if _DEBUG_TELEMETRY else None  # type: ignore[assignment]
+    if capture is not None:
+        capture['case_id'] = session.get('_eval_case_id')
+        capture['input'] = msg
+        capture['sanitized'] = sanitized
+        capture['candidates'] = candidates
+        capture['llm_invocations'] = 1
+
+    route = classify_with_llm(_llm, sanitized, None, candidates, all_names, _capture=capture)
+
+    if capture is not None:
+        capture['route'] = route
+        capture['_next'] = route.get('intent', 'out_of_scope') if route else None
+        _write_telemetry(capture)
 
     if route is None:
         # LLM call failed — recover BAF classifier intent as fallback
@@ -780,7 +819,8 @@ def rank_models_body(session: Session) -> None:
             cat       = route.get('category') or ('Macro' if level == 'All' else 'Total')
             top_n     = route.get('top_n') or 5
             ascending = bool(route.get('ascending', False))
-            licensing = None  # LLM doesn't extract licensing yet; fall through to entity extractor
+            # Use LLM-extracted licensing first; fall back to entity extraction from raw text
+            licensing = route.get('licensing') or extract_licensing(msg)
         else:
             level = extract_cefr_level(msg)
             cat   = extract_category(msg)
@@ -792,9 +832,6 @@ def rank_models_body(session: Session) -> None:
                 level = "All"
             if not cat:
                 cat = "Macro" if level == "All" else "Total"
-
-        if route:
-            licensing = extract_licensing(msg)  # always extract licensing from raw message
 
         rows = rank_models(level, cat, top_n=top_n, ascending=ascending, licensing=licensing)
 
@@ -906,7 +943,8 @@ def filter_results_body(session: Session) -> None:
 
         level     = (route.get('cefr_level') if route else None) or extract_cefr_level(msg)
         cat       = (route.get('category')   if route else None) or extract_category(msg)
-        licensing = extract_licensing(msg)
+        # Use LLM-extracted licensing first; fall back to entity extraction from raw text
+        licensing = (route.get('licensing') if route else None) or extract_licensing(msg)
 
         # Detect family mentions (basic heuristic)
         family = None

@@ -27,6 +27,10 @@ from typing import Optional
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from tests.evaluation_cases import CASES
+try:
+    from tests.holdout_cases import HOLDOUT_CASES
+except ImportError:
+    HOLDOUT_CASES = []
 
 try:
     import websockets
@@ -82,7 +86,8 @@ def _score_response(case: dict, response_text: str, response_type: str) -> str:
 
 # ── WebSocket evaluation ──────────────────────────────────────────────────────
 
-async def _run_case(url: str, case: dict, timeout: float, lang: str = 'en') -> dict:
+async def _run_case(url: str, case: dict, timeout: float, lang: str = 'en',
+                   quiet_timeout: float = 3.0) -> dict:
     """Connect, send the test message, collect all agent replies, return result dict."""
     start = time.monotonic()
     collected_texts: list[str] = []
@@ -92,22 +97,33 @@ async def _run_case(url: str, case: dict, timeout: float, lang: str = 'en') -> d
 
     try:
         async with websockets.connect(url, open_timeout=10) as ws:
-            # Set language
+            # Set language and eval case ID (case ID used by debug telemetry)
             await ws.send(json.dumps({'action': 'user_set_variable',
-                                      'message': {'ui_language': lang}}))
+                                      'message': {'ui_language': lang,
+                                                  '_eval_case_id': str(case.get('id', ''))}}))
 
-            # Wait briefly for greeting
-            await asyncio.sleep(0.3)
+
+            # Drain the greeting: consume any messages that arrive within 1.5s.
+            # These are BAF's automatic greeting/state-entry messages, not answers.
+            drain_deadline = time.monotonic() + 1.5
+            while time.monotonic() < drain_deadline:
+                try:
+                    await asyncio.wait_for(ws.recv(),
+                                           timeout=drain_deadline - time.monotonic())
+                except (asyncio.TimeoutError, Exception):
+                    break
 
             # Send the test message
             await ws.send(json.dumps({'action': 'user_message', 'message': case['input']}))
 
-            # Collect responses until quiet or timeout
+            # Collect responses until quiet or timeout.
+            # quiet_timeout: seconds of silence after the last received message
+            # before declaring the agent done.  Use 3s for classical, 20s+ for LLM.
             deadline = start + timeout
             while time.monotonic() < deadline:
                 remaining = deadline - time.monotonic()
                 try:
-                    raw = await asyncio.wait_for(ws.recv(), timeout=min(remaining, 3.0))
+                    raw = await asyncio.wait_for(ws.recv(), timeout=min(remaining, quiet_timeout))
                     payload = json.loads(raw)
                     action = payload.get('action', '')
                     msg = payload.get('message', '')
@@ -124,7 +140,7 @@ async def _run_case(url: str, case: dict, timeout: float, lang: str = 'en') -> d
                             collected_texts.append(msg)
                 except asyncio.TimeoutError:
                     if collected_texts or collected_options:
-                        break   # agent has been quiet for 3s — assume done
+                        break   # agent has been quiet for quiet_timeout — assume done
                     # else keep waiting up to deadline
     except Exception as exc:
         error_msg = str(exc)
@@ -160,14 +176,46 @@ async def _run_case(url: str, case: dict, timeout: float, lang: str = 'en') -> d
     }
 
 
-async def _run_all(url: str, cases: list[dict], timeout: float) -> list[dict]:
-    """Run all cases sequentially (avoid overloading the agent)."""
+async def _run_all(url: str, cases: list[dict], timeout: float,
+                  quiet_timeout: float = 3.0,
+                  checkpoint_path: str = '') -> list[dict]:
+    """Run all cases sequentially (avoid overloading the agent).
+
+    If checkpoint_path is set, each completed result is immediately appended
+    to that CSV so a crash/interruption doesn't lose finished work.
+    The caller is responsible for ensuring checkpoint_path does not already
+    contain rows for the cases being run (use --ids to skip completed ones).
+    """
     results = []
+
+    # Initialise checkpoint file with header on first write
+    _checkpoint_initialised = False
+
+    def _append_checkpoint(result: dict) -> None:
+        nonlocal _checkpoint_initialised
+        if not checkpoint_path:
+            return
+        fields = [
+            'id', 'input', 'lang', 'expected_intent', 'expected_answer',
+            'clarification_ok', 'notes', 'response', 'has_options',
+            'score', 'latency_s', 'error',
+        ]
+        os.makedirs(os.path.dirname(os.path.abspath(checkpoint_path)), exist_ok=True)
+        write_header = not _checkpoint_initialised and not os.path.exists(checkpoint_path)
+        with open(checkpoint_path, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=fields)
+            if write_header:
+                writer.writeheader()
+            writer.writerow({k: result.get(k, '') for k in fields})
+        _checkpoint_initialised = True
+
     for i, case in enumerate(cases):
         print(f"  [{i+1}/{len(cases)}] Case {case['id']}: {case['input'][:60]!r}...", end='', flush=True)
-        result = await _run_case(url, case, timeout, lang=case.get('lang', 'en'))
+        result = await _run_case(url, case, timeout, lang=case.get('lang', 'en'),
+                                 quiet_timeout=quiet_timeout)
         print(f" → {result['score']} ({result['latency_s']}s)")
         results.append(result)
+        _append_checkpoint(result)
         await asyncio.sleep(0.5)   # small pause between requests
     return results
 
@@ -200,7 +248,7 @@ def _print_summary(results: list[dict]) -> None:
         print("\n── Failed cases ─────────────────────────────────────────")
         for r in results:
             if r['score'] in ('wrong', 'timeout', 'error'):
-                print(f"  [{r['id']:2d}] {r['score'].upper():8s}  {r['input'][:50]!r}")
+                print(f"  [{str(r['id']):>4s}] {r['score'].upper():8s}  {r['input'][:50]!r}")
                 if r['error']:
                     print(f"           Error: {r['error']}")
                 elif r['response']:
@@ -229,8 +277,13 @@ def main() -> None:
     parser.add_argument('--url',     default='ws://localhost:8765', help='Agent WebSocket URL')
     parser.add_argument('--timeout', type=float, default=30.0,     help='Per-case timeout (s)')
     parser.add_argument('--output',  default='',                    help='Output CSV path')
-    parser.add_argument('--ids',     default='',
+    parser.add_argument('--holdout', action='store_true',
+                        help='Run holdout_cases.py instead of evaluation_cases.py')
+    parser.add_argument('--ids',           default='',
                         help='Comma-separated case IDs to run (default: all)')
+    parser.add_argument('--quiet-timeout', type=float, default=3.0,
+                        help='Seconds of silence after last message before declaring done (default 3; '
+                             'use 20+ for LLM mode)')
     args = parser.parse_args()
 
     if not HAS_WEBSOCKETS:
@@ -238,26 +291,39 @@ def main() -> None:
         print("Install with: pip install websockets")
         sys.exit(1)
 
+    # Select case suite
+    if args.holdout:
+        if not HOLDOUT_CASES:
+            print("ERROR: holdout_cases.py not found or HOLDOUT_CASES is empty.")
+            sys.exit(1)
+        cases = HOLDOUT_CASES
+    else:
+        cases = CASES
+
     # Filter cases if --ids specified
-    cases = CASES
     if args.ids:
-        wanted = {int(x.strip()) for x in args.ids.split(',')}
-        cases = [c for c in CASES if c['id'] in wanted]
+        wanted = {x.strip() for x in args.ids.split(',')}
+        # Support both int IDs (50-case suite) and string IDs like 'H01' (holdout)
+        cases = [c for c in cases if str(c['id']) in wanted]
 
     agent_mode = os.environ.get('LETZEVAL_AGENT_MODE', 'classical')
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     output = args.output or f'evaluation_results/{agent_mode}_{timestamp}.csv'
 
     print(f"LëtzEval agent evaluation")
-    print(f"  URL       : {args.url}")
-    print(f"  Mode      : {agent_mode}")
-    print(f"  Cases     : {len(cases)}")
-    print(f"  Timeout   : {args.timeout}s per case")
-    print(f"  Output    : {output}")
+    print(f"  URL           : {args.url}")
+    print(f"  Mode          : {agent_mode}")
+    print(f"  Cases         : {len(cases)}")
+    print(f"  Timeout       : {args.timeout}s per case")
+    print(f"  Quiet timeout : {args.quiet_timeout}s")
+    print(f"  Output        : {output}")
     print()
 
-    results = asyncio.run(_run_all(args.url, cases, args.timeout))
+    results = asyncio.run(_run_all(args.url, cases, args.timeout,
+                                   quiet_timeout=args.quiet_timeout,
+                                   checkpoint_path=output))
     _print_summary(results)
+    # Final write overwrites checkpoint with identical content (consistent header+rows)
     _save_csv(results, output)
 
 
