@@ -238,15 +238,9 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
     borderRadius: "16px",
     boxShadow: colors.shadow,
     border: `1px solid ${colors.border}`,
-    padding: "24px",
+    padding: "24px 28px 20px",
     transition: "background-color 0.3s ease, border-color 0.3s ease",
     ...styles,
-  };
-
-  const chartContainerStyle: CSSProperties = {
-    width: "100%",
-    height: "520px",
-    marginTop: "24px",
   };
 
   if (loading) {
@@ -290,175 +284,235 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
 
   const getMetricLabel = (level: string) => `${level} ${metricNameSuffix}`;
 
+  const baselineStroke = isDark ? colors.textMuted : "#000000";
+
   return (
     <div id={id} style={containerStyle}>
+
+      {/* ── Card header: title left, toggle right ── */}
+      <div style={{
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: "16px",
+        marginBottom: "20px",
+        flexWrap: "wrap",
+      }}>
+        <div>
+          <h3 style={{
+            margin: "0 0 4px",
+            fontSize: "1.15rem",
+            fontWeight: 700,
+            color: colors.textPrimary,
+            letterSpacing: "-0.02em",
+            lineHeight: 1.3,
+          }}>
+            {resolvedTitle}
+            {filteredData.length > 0 && (
+              <span style={{
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                color: colors.textMuted,
+                marginLeft: "10px",
+                letterSpacing: "0",
+              }}>
+                {t("chart.modelsCount", { count: filteredData.length })}
+              </span>
+            )}
+          </h3>
+          <p style={{
+            margin: 0,
+            fontSize: "0.78rem",
+            color: colors.textMuted,
+            fontWeight: 500,
+            letterSpacing: "0.01em",
+          }}>
+            {plotMode === "simple"
+              ? t("chart.questionCount", { n: 629 })
+              : `${filters.cefrLevel === "All" ? t("filters.all") : filters.cefrLevel} · ${metricNameSuffix} · ${t("chart.questionCount", { n: subtitleSampleCount })}`}
+          </p>
+        </div>
+
+        {/* Simple / Detailed segmented toggle */}
+        <div style={{
+          display: "inline-flex",
+          border: `1px solid ${colors.border}`,
+          borderRadius: "8px",
+          overflow: "hidden",
+          backgroundColor: colors.tableHeaderBg,
+          flexShrink: 0,
+        }}>
+          {(["simple", "detailed"] as const).map((mode) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => setPlotMode(mode)}
+              style={{
+                padding: "6px 18px",
+                fontSize: "12px",
+                fontWeight: 600,
+                border: "none",
+                cursor: "pointer",
+                backgroundColor: plotMode === mode ? colors.accent : "transparent",
+                color: plotMode === mode ? "#ffffff" : colors.textMuted,
+                transition: "background-color 0.15s, color 0.15s",
+                letterSpacing: "0.03em",
+                textTransform: "uppercase",
+              }}
+            >
+              {t(`chart.plotMode.${mode}`)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Compact filter bar ── */}
       <ModelFilterPanel
         filters={filters}
         onFiltersChange={setFilters}
         styles={{
-          backgroundColor: "transparent",
-          boxShadow: "none",
-          border: "none",
-          padding: "0",
-          marginBottom: "32px",
+          marginBottom: "20px",
+          paddingBottom: "20px",
           borderBottom: `1px solid ${colors.border}`,
-          paddingBottom: "24px"
         }}
       />
 
-      <div style={chartContainerStyle}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
-          {resolvedTitle ? (
-            <h3 style={{
-              margin: 0,
-              fontSize: "1.25rem",
-              fontWeight: 600,
-              color: colors.textPrimary,
-              letterSpacing: "-0.01em",
-            }}>
-              {resolvedTitle}
-              <span style={{
-                fontSize: "0.875rem",
-                fontWeight: 400,
-                color: colors.textMuted,
-                marginLeft: "10px"
-              }}>
-                ({t("chart.modelsCount", { count: filteredData.length })})
-              </span>
-            </h3>
-          ) : <span />}
-
-          {/* Simple / Detailed toggle */}
-          <div style={{
-            display: "flex",
-            borderRadius: "999px",
-            border: `1px solid ${colors.border}`,
-            overflow: "hidden",
-            backgroundColor: colors.surface,
-          }}>
-            {(["simple", "detailed"] as const).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => setPlotMode(mode)}
-                style={{
-                  padding: "6px 16px",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  border: "none",
-                  cursor: "pointer",
-                  backgroundColor: plotMode === mode ? colors.accent : "transparent",
-                  color: plotMode === mode ? "#ffffff" : colors.textMuted,
-                  transition: "background-color 0.15s ease, color 0.15s ease",
-                  textTransform: "capitalize",
-                }}
-              >
-                {t(`chart.plotMode.${mode}`)}
-              </button>
-            ))}
-          </div>
+      {/* ── Chart ── */}
+      {filteredData.length === 0 ? (
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "320px",
+        }}>
+          <p style={{ color: colors.textMuted, fontSize: "0.9rem" }}>{t("chart.noModels")}</p>
         </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={480}>
+          <BarChart
+            data={filteredData}
+            margin={{ top: 12, right: 16, left: 8, bottom: 90 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke={colors.chartGrid}
+              vertical={false}
+            />
+            <XAxis
+              dataKey="name"
+              angle={-42}
+              textAnchor="end"
+              height={90}
+              interval={0}
+              tick={{ fontSize: 10, fill: colors.chartAxis }}
+              tickFormatter={(name: string) =>
+                name.length > 22 ? name.slice(0, 22) + "…" : name
+              }
+              stroke={colors.chartAxis}
+              tickLine={false}
+            />
+            <YAxis
+              domain={[0, 100]}
+              tickFormatter={(v: number) => `${v}%`}
+              tick={{ fontSize: 11, fill: colors.chartAxis }}
+              stroke="none"
+              tickLine={false}
+              width={44}
+              axisLine={false}
+            />
+            <Tooltip
+              cursor={{ fill: isDark ? "rgba(148,163,184,0.07)" : "rgba(15,23,42,0.04)" }}
+              contentStyle={{
+                backgroundColor: colors.surfaceElevated,
+                border: `1px solid ${colors.border}`,
+                borderRadius: "8px",
+                boxShadow: colors.shadow,
+                color: colors.textPrimary,
+                fontSize: "13px",
+              }}
+              formatter={(value: number) => [`${value.toFixed(1)}%`, undefined]}
+              labelStyle={{ fontWeight: 600, marginBottom: "6px", color: colors.textPrimary }}
+              itemStyle={{ color: colors.textPrimary, padding: "2px 0" }}
+            />
+            <Legend
+              wrapperStyle={{
+                paddingTop: "16px",
+                fontSize: "12px",
+                color: colors.textPrimary,
+                lineHeight: "20px",
+              }}
+              iconType="square"
+              iconSize={10}
+            />
 
-        {/* Sample count subtitle */}
-        <p style={{ margin: "0 0 10px 0", fontSize: "0.8rem", color: colors.textMuted, fontWeight: 500 }}>
-          {plotMode === "simple"
-            ? t("chart.questionCount", { n: 629 })
-            : `${filters.cefrLevel === "All" ? t("filters.all") : filters.cefrLevel} · ${metricNameSuffix} · ${t("chart.questionCount", { n: subtitleSampleCount })}`}
-        </p>
-
-        {filteredData.length === 0 ? (
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80%" }}>
-            <p style={{ color: colors.textMuted }}>{t("chart.noModels")}</p>
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height="90%">
-            <BarChart
-              data={filteredData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke={colors.chartGrid} />
-              <XAxis
-                dataKey="name"
-                angle={-45}
-                textAnchor="end"
-                height={80}
-                interval={0}
-                tick={{ fontSize: 11, fill: colors.chartAxis }}
-                stroke={colors.chartAxis}
-              />
-              <YAxis
-                label={{ value: t("chart.score"), angle: -90, position: "insideLeft", style: { fill: colors.chartAxis } }}
-                tick={{ fill: colors.chartAxis }}
-                stroke={colors.chartAxis}
-              />
-              <Tooltip
-                cursor={{ fill: isDark ? "rgba(148,163,184,0.1)" : "rgba(15,23,42,0.05)" }}
-                contentStyle={{
-                  backgroundColor: colors.surfaceElevated,
-                  border: `1px solid ${colors.border}`,
-                  borderRadius: "8px",
-                  boxShadow: colors.shadow,
-                  color: colors.textPrimary,
+            {/* Baseline reference line */}
+            {plotMode === "simple" && (
+              <ReferenceLine
+                y={34.6}
+                stroke={baselineStroke}
+                strokeDasharray="6 3"
+                strokeWidth={1.5}
+                label={{
+                  value: "Baseline 34.6%",
+                  position: "insideTopRight",
+                  fill: baselineStroke,
+                  fontSize: 10,
+                  fontWeight: 500,
+                  dy: -4,
                 }}
-                labelStyle={{ fontWeight: 600, marginBottom: "8px", color: colors.textPrimary }}
-                itemStyle={{ color: colors.textPrimary }}
               />
-              <Legend
-                wrapperStyle={{ paddingTop: "20px", color: colors.textPrimary }}
-                iconType="square"
+            )}
+            {plotMode === "detailed" && filters.cefrLevel !== "All" && (
+              <ReferenceLine
+                y={cefrBaselines[filters.cefrLevel]}
+                stroke={baselineStroke}
+                strokeDasharray="6 3"
+                strokeWidth={1.5}
+                label={{
+                  value: `Baseline ${cefrBaselines[filters.cefrLevel]}%`,
+                  position: "insideTopRight",
+                  fill: baselineStroke,
+                  fontSize: 10,
+                  fontWeight: 500,
+                  dy: -4,
+                }}
               />
+            )}
 
-              {/* Baseline reference lines */}
-              {plotMode === "simple" && (
-                <ReferenceLine
-                  y={34.6}
-                  stroke={colors.textMuted}
-                  strokeWidth={1.5}
-                />
-              )}
-              {plotMode === "detailed" && filters.cefrLevel !== "All" && (
-                <ReferenceLine
-                  y={cefrBaselines[filters.cefrLevel]}
-                  stroke={colors.textMuted}
-                  strokeDasharray="6 3"
-                  strokeWidth={1.5}
-                />
-              )}
-
-              {/* Bars */}
-              {plotMode === "simple" ? (
-                <Bar
-                  dataKey="macro_avg"
-                  name={`Macro Average (n=629)`}
-                  fill={metricColors.macro_avg}
-                  radius={[4, 4, 0, 0]}
-                />
-              ) : (
-                <>
-                  {visibleMetrics.includes("a1_total") && (
-                    <Bar dataKey="a1_total" name={`${getMetricLabel("A1")} (n=${getSampleCount("A1", filters.testCategory)})`} fill={metricColors.a1_total} radius={[4, 4, 0, 0]} />
-                  )}
-                  {visibleMetrics.includes("a2_total") && (
-                    <Bar dataKey="a2_total" name={`${getMetricLabel("A2")} (n=${getSampleCount("A2", filters.testCategory)})`} fill={metricColors.a2_total} radius={[4, 4, 0, 0]} />
-                  )}
-                  {visibleMetrics.includes("b1_total") && (
-                    <Bar dataKey="b1_total" name={`${getMetricLabel("B1")} (n=${getSampleCount("B1", filters.testCategory)})`} fill={metricColors.b1_total} radius={[4, 4, 0, 0]} />
-                  )}
-                  {visibleMetrics.includes("b2_total") && (
-                    <Bar dataKey="b2_total" name={`${getMetricLabel("B2")} (n=${getSampleCount("B2", filters.testCategory)})`} fill={metricColors.b2_total} radius={[4, 4, 0, 0]} />
-                  )}
-                  {visibleMetrics.includes("c1_total") && (
-                    <Bar dataKey="c1_total" name={`${getMetricLabel("C1")} (n=${getSampleCount("C1", filters.testCategory)})`} fill={metricColors.c1_total} radius={[4, 4, 0, 0]} />
-                  )}
-                  {visibleMetrics.includes("c2_total") && (
-                    <Bar dataKey="c2_total" name={`${getMetricLabel("C2")} (n=${getSampleCount("C2", filters.testCategory)})`} fill={metricColors.c2_total} radius={[4, 4, 0, 0]} />
-                  )}
-                </>
-              )}
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-      </div>
+            {/* Bars */}
+            {plotMode === "simple" ? (
+              <Bar
+                dataKey="macro_avg"
+                name={`Macro Average (Test Questions = 629)`}
+                fill={metricColors.macro_avg}
+                radius={[3, 3, 0, 0]}
+                maxBarSize={48}
+              />
+            ) : (
+              <>
+                {visibleMetrics.includes("a1_total") && (
+                  <Bar dataKey="a1_total" name={`${getMetricLabel("A1")} (Test Questions = ${getSampleCount("A1", filters.testCategory)})`} fill={metricColors.a1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                )}
+                {visibleMetrics.includes("a2_total") && (
+                  <Bar dataKey="a2_total" name={`${getMetricLabel("A2")} (Test Questions = ${getSampleCount("A2", filters.testCategory)})`} fill={metricColors.a2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                )}
+                {visibleMetrics.includes("b1_total") && (
+                  <Bar dataKey="b1_total" name={`${getMetricLabel("B1")} (Test Questions = ${getSampleCount("B1", filters.testCategory)})`} fill={metricColors.b1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                )}
+                {visibleMetrics.includes("b2_total") && (
+                  <Bar dataKey="b2_total" name={`${getMetricLabel("B2")} (Test Questions = ${getSampleCount("B2", filters.testCategory)})`} fill={metricColors.b2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                )}
+                {visibleMetrics.includes("c1_total") && (
+                  <Bar dataKey="c1_total" name={`${getMetricLabel("C1")} (Test Questions = ${getSampleCount("C1", filters.testCategory)})`} fill={metricColors.c1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                )}
+                {visibleMetrics.includes("c2_total") && (
+                  <Bar dataKey="c2_total" name={`${getMetricLabel("C2")} (Test Questions = ${getSampleCount("C2", filters.testCategory)})`} fill={metricColors.c2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                )}
+              </>
+            )}
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };
