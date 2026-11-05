@@ -12,7 +12,7 @@
     "designedWith": "Criado com"
   },
   "table": {
-    "loading": "A carregar dados...",
+    "loading": "Carregando dados...",
     "error": "Erro ao carregar dados",
     "add": "Adicionar {{entity}}",
     "addDefault": "Adicionar entrada",
@@ -23,12 +23,12 @@
     "prev": "Anterior",
     "next": "Próximo",
     "page": "Página {{current}} de {{total}}",
-    "showing": "A mostrar {{visible}} de {{total}} linhas",
+    "showing": "Mostrando {{visible}} de {{total}} linhas",
     "filtered": "filtrado",
     "noOptions": "Nenhuma opção disponível",
     "editTitle": "Editar",
     "requiredFields": "Por favor, preencha os seguintes campos obrigatórios: {{fields}}",
-    "saveFailed": "Falha ao guardar. Por favor, verifique os dados inseridos.",
+    "saveFailed": "Falha ao salvar. Por favor, verifique os dados inseridos.",
     "updateFailed": "Falha ao atualizar. Por favor, verifique os dados inseridos.",
     "networkError": "Erro de rede. Por favor, tente novamente."
   },
