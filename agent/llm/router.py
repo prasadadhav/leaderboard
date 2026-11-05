@@ -252,8 +252,9 @@ def classify_with_llm(
             resp = llm.client.chat.completions.create(
                 model=model_id,
                 messages=messages,
-                max_tokens=200,
-                temperature=0,
+                # max_tokens=200,
+                # temperature=0,
+                max_completion_tokens=800,
                 response_format={'type': 'json_object'},
             )
             raw = resp.choices[0].message.content
