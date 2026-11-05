@@ -8,7 +8,9 @@
   },
   "howItWorks": {
     "title": "Wie funktioniert das?",
-    "body": "Mithilfe offizieller Sprachprüfungen, die von Experten des INLL entwickelt wurden, testen wir LLMs systematisch, indem wir sie jede Frage lösen lassen und ihre Gesamtleistung bewerten. Insgesamt gibt es 630 Multiple-Choice-Fragen, die jeweils einer von vier übergeordneten Kategorien (Vokabular, Grammatik, Leseverstehen, Hörverstehen) und einem CEFR-Niveau (A1, A2, B1, B2, C1, C2) zugeordnet sind. Die Leistung der LLMs für jede Kategorie und jedes CEFR-Niveau wird als Prozentsatz korrekt beantworteter Fragen ausgedrückt."
+    "body": "Mithilfe offizieller Sprachprüfungen, die von Experten des INLL entwickelt wurden, testen wir LLMs systematisch, indem wir sie jede Frage lösen lassen und ihre Gesamtleistung bewerten. Insgesamt gibt es 630 Multiple-Choice-Fragen, die jeweils einer von vier übergeordneten Kategorien (Vokabular, Grammatik, Leseverstehen, Hörverstehen) und einem CEFR-Niveau (A1, A2, B1, B2, C1, C2) zugeordnet sind. Die Leistung der LLMs für jede Kategorie und jedes CEFR-Niveau wird als Prozentsatz korrekt beantworteter Fragen ausgedrückt.",
+    "paperSentence": "Weitere Details zur Auswertungsmethodologie finden Sie im ",
+    "paperLinkText": "Paper"
   },
   "howToUse": {
     "title": "Wie verwendet man dieses Leaderboard?",

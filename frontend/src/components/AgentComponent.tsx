@@ -216,7 +216,7 @@ export const AgentComponent: React.FC = () => {
 
   const launcherStyle: React.CSSProperties = {
     position: "fixed",
-    bottom: 28,
+    bottom: 60,
     right: 28,
     zIndex: 1000,
     display: "flex",

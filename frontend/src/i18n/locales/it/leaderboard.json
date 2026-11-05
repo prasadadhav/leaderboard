@@ -8,7 +8,9 @@
   },
   "howItWorks": {
     "title": "Come funziona?",
-    "body": "Utilizzando esami linguistici ufficiali elaborati da esperti dell'INLL, testiamo sistematicamente gli LLM facendo loro risolvere ogni domanda e valutando le loro prestazioni complessive. In totale ci sono 630 domande a scelta multipla, ognuna appartenente a una delle quattro categorie principali (Vocabolario, Grammatica, Comprensione scritta, Comprensione orale) e a un livello CEFR (A1, A2, B1, B2, C1, C2). Le prestazioni degli LLM per ogni categoria e livello CEFR sono espresse come percentuale di domande risposte correttamente."
+    "body": "Utilizzando esami linguistici ufficiali elaborati da esperti dell'INLL, testiamo sistematicamente gli LLM facendo loro risolvere ogni domanda e valutando le loro prestazioni complessive. In totale ci sono 630 domande a scelta multipla, ognuna appartenente a una delle quattro categorie principali (Vocabolario, Grammatica, Comprensione scritta, Comprensione orale) e a un livello CEFR (A1, A2, B1, B2, C1, C2). Le prestazioni degli LLM per ogni categoria e livello CEFR sono espresse come percentuale di domande risposte correttamente.Per ulteriori dettagli sulla metodologia di valutazione, fate riferimento al articolo di ricerca",
+    "paperSentence": "Per ulteriori dettagli sulla metodologia di valutazione, fate riferimento al ",
+    "paperLinkText": "articolo di ricerca"
   },
   "howToUse": {
     "title": "Come utilizzare questa classifica?",

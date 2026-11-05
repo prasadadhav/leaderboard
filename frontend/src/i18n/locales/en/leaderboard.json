@@ -9,7 +9,7 @@
   "howItWorks": {
     "title": "How Does It Work?",
     "body": "Using official language exams crafted by experts at INLL, we systematically test LLMs by letting them solve each question and grade their overall performance. There are 629 multiple-choice questions in total, each belonging to one out of four broad categories (Vocabulary, Grammar, Reading Comprehension, Listening Comprehension) and a CEFR level (A1, A2, B1, B2, C1, C2). The performance of the LLMs for each category and CEFR level is expressed as a percentage of correctly answered questions.",
-    "paperSentence": "For more details about the evaluation methodology, see the",
+    "paperSentence": "For more details about the evaluation methodology, see the ",
     "paperLinkText": "research paper"
   },
   "howToUse": {
