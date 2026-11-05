@@ -8,7 +8,9 @@
   },
   "howItWorks": {
     "title": "Comment a cette étude été réalisée ?",
-    "body": "À l'aide des examens de langue officiels conçus par des experts de l'INLL, nous avons testé de façon systématique les LLM en les faisant résoudre chaque question et en évaluant leurs performances globales. Il y a au total 630 questions à choix multiple, chacune appartenant à l'une des quatre grandes catégories (Vocabulaire, Grammaire, Compréhension écrite, Compréhension orale) et à un niveau CEFR (A1, A2, B1, B2, C1, C2). Les performances des LLM pour chaque catégorie et niveau CEFR sont exprimées en pourcentage de questions répondues correctement."
+    "body": "À l'aide des examens de langue officiels conçus par des experts de l'INLL, nous avons testé de façon systématique les LLM en les faisant résoudre chaque question et en évaluant leurs performances globales. Il y a au total 630 questions à choix multiple, chacune appartenant à l'une des quatre grandes catégories (Vocabulaire, Grammaire, Compréhension écrite, Compréhension orale) et à un niveau CEFR (A1, A2, B1, B2, C1, C2). Les performances des LLM pour chaque catégorie et niveau CEFR sont exprimées en pourcentage de questions répondues correctement.",
+    "paperSentence": "Pour plus de détails sur la méthodologie d'évaluation, consultez ",
+    "paperLinkText": "l'article de recherche."
   },
   "howToUse": {
     "title": "Comment utiliser ce leaderboard ?",
