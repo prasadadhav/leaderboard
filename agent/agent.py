@@ -84,7 +84,8 @@ baf_logger.setLevel(logging.INFO)
 # ---------------------------------------------------------------------------
 
 # LETZEVAL_AGENT_MODE: 'classical' (default) | 'llm'
-AGENT_MODE = os.environ.get('LETZEVAL_AGENT_MODE', 'classical').lower().strip()
+# AGENT_MODE = os.environ.get('LETZEVAL_AGENT_MODE', 'classical').lower().strip()
+AGENT_MODE = os.environ.get('LETZEVAL_AGENT_MODE', 'ollama')
 if AGENT_MODE not in ('classical', 'llm'):
     logging.warning("Unknown LETZEVAL_AGENT_MODE=%r; defaulting to 'classical'.", AGENT_MODE)
     AGENT_MODE = 'classical'
