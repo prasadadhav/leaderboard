@@ -143,7 +143,7 @@ export const ModelFilterPanel: React.FC<Props> = ({
   return (
     <div style={styles}>
       {/* ── Row 1: dropdown chips + size range + reset ── */}
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
 
         {/* CEFR Level */}
         <div style={chipOuter}>
@@ -323,7 +323,35 @@ export const ModelFilterPanel: React.FC<Props> = ({
             <span style={sliderLbl}>
               {t("filters.minPerformance", { value: "" }).replace(/[:\s]+$/, "")}
             </span>
-            <span style={sliderVal}>{filters.minPerformance}%</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                step="1"
+                value={filters.minPerformance}
+                onChange={(e) =>
+                  handleFilterChange("minPerformance", Math.max(0, Math.min(100, parseFloat(e.target.value) || 0)))
+                }
+                style={{
+                  width: "48px",
+                  height: "20px",
+                  padding: "0 4px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: "4px",
+                  backgroundColor: "transparent",
+                  color: colors.textPrimary,
+                  outline: "none",
+                  textAlign: "center",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = colors.accent)}
+                onBlur={(e) => (e.currentTarget.style.borderColor = colors.border)}
+              />
+              <span style={{ ...sliderVal, fontSize: "12px" }}>%</span>
+            </div>
           </div>
           <input
             type="range"
