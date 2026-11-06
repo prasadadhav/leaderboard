@@ -4,7 +4,7 @@
   },
   "intro": {
     "paragraph1": "Os grandes modelos de linguagem (LLMs) transformaram o panorama da IA nos últimos anos. Estão se tornando omnipresentes, sendo utilizados tanto por usuários individuais quanto por empresas. No entanto, os LLMs são desenvolvidos principalmente para línguas muito difundidas, como o inglês, o espanhol ou o alemão, deixando línguas como o luxemburguês em segundo plano.",
-    "paragraph2": "Neste projeto, nosso objetivo foi testar as capacidades linguísticas dos LLMs em luxemburguês. Em colaboração com o Institut National des Langues Luxembourg, utilizamos exames de proficiência linguística para avaliar o desempenho de 45 LLMs atuais."
+    "paragraph2": "Neste projeto, nosso objetivo foi testar as capacidades linguísticas dos LLMs em luxemburguês. Em colaboração com o Institut National des Langues Luxembourg (INLL), utilizamos exames de proficiência linguística para avaliar o desempenho de 45 LLMs atuais."
   },
   "howItWorks": {
     "title": "Como funciona?",

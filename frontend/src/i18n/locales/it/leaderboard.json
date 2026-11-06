@@ -4,7 +4,7 @@
   },
   "intro": {
     "paragraph1": "I large language models (LLMs) hanno rimodellato il panorama dell'intelligenza artificiale negli ultimi anni. Sono diventati onnipresenti e vengono utilizzati sia da utenti privati che da aziende. Tuttavia, gli LLM vengono sviluppati principalmente per lingue molto diffuse come l'inglese, lo spagnolo o il tedesco, lasciando in disparte lingue come il lussemburghese.",
-    "paragraph2": "In questo progetto, abbiamo cercato di testare le capacità linguistiche degli LLM in lussemburghese. In collaborazione con l'Institut National des Langues Luxembourg, abbiamo utilizzato esami di competenza linguistica per valutare le prestazioni di LLM attuali."
+    "paragraph2": "In questo progetto, abbiamo cercato di testare le capacità linguistiche degli LLM in lussemburghese. In collaborazione con l'Institut National des Langues Luxembourg (INLL) , abbiamo utilizzato esami di competenza linguistica per valutare le prestazioni di LLM attuali."
   },
   "howItWorks": {
     "title": "Come funziona?",

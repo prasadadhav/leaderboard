@@ -4,7 +4,7 @@
   },
   "intro": {
     "paragraph1": "Große Sprachmodelle (LLMs) haben die KI-Landschaft in den letzten Jahren grundlegend verändert. Sie werden immer mehr omnipräsent und sowohl von Privatpersonen als auch von Unternehmen genutzt. LLMs werden jedoch hauptsächlich für weit verbreitete Sprachen wie Englisch, Spanisch oder Deutsch entwickelt, während Sprachen wie Luxemburgisch dabei links liegen bleiben.",
-    "paragraph2": "In diesem Projekt haben wir versucht, die sprachlichen Fähigkeiten von LLMs im Luxemburgischen zu testen. In Zusammenarbeit mit dem Institut National des Langues Luxembourg haben wir Sprachprüfungen eingesetzt, um die Leistung von aktuellen LLMs zu evaluieren."
+    "paragraph2": "In diesem Projekt haben wir versucht, die sprachlichen Fähigkeiten von LLMs im Luxemburgischen zu testen. In Zusammenarbeit mit dem Institut National des Langues Luxembourg (INLL) haben wir Sprachprüfungen eingesetzt, um die Leistung von aktuellen LLMs zu evaluieren."
   },
   "howItWorks": {
     "title": "Wie funktioniert das?",

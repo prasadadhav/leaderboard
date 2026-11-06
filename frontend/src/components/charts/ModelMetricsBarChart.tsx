@@ -483,7 +483,7 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
             {plotMode === "simple" ? (
               <Bar
                 dataKey="macro_avg"
-                name={`Macro Average (Test Questions = 629)`}
+                name={`Macro Average (No. of Test Questions = 629)`}
                 fill={metricColors.macro_avg}
                 radius={[3, 3, 0, 0]}
                 maxBarSize={48}
@@ -491,22 +491,22 @@ export const ModelMetricsBarChart: React.FC<Props> = ({
             ) : (
               <>
                 {visibleMetrics.includes("a1_total") && (
-                  <Bar dataKey="a1_total" name={`${getMetricLabel("A1")} (Test Questions = ${getSampleCount("A1", filters.testCategory)})`} fill={metricColors.a1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                  <Bar dataKey="a1_total" name={`${getMetricLabel("A1")} (No. of Test Questions = ${getSampleCount("A1", filters.testCategory)})`} fill={metricColors.a1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
                 )}
                 {visibleMetrics.includes("a2_total") && (
-                  <Bar dataKey="a2_total" name={`${getMetricLabel("A2")} (Test Questions = ${getSampleCount("A2", filters.testCategory)})`} fill={metricColors.a2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                  <Bar dataKey="a2_total" name={`${getMetricLabel("A2")} (No. of Test Questions = ${getSampleCount("A2", filters.testCategory)})`} fill={metricColors.a2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
                 )}
                 {visibleMetrics.includes("b1_total") && (
-                  <Bar dataKey="b1_total" name={`${getMetricLabel("B1")} (Test Questions = ${getSampleCount("B1", filters.testCategory)})`} fill={metricColors.b1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                  <Bar dataKey="b1_total" name={`${getMetricLabel("B1")} (No. of Test Questions = ${getSampleCount("B1", filters.testCategory)})`} fill={metricColors.b1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
                 )}
                 {visibleMetrics.includes("b2_total") && (
-                  <Bar dataKey="b2_total" name={`${getMetricLabel("B2")} (Test Questions = ${getSampleCount("B2", filters.testCategory)})`} fill={metricColors.b2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                  <Bar dataKey="b2_total" name={`${getMetricLabel("B2")} (No. of Test Questions = ${getSampleCount("B2", filters.testCategory)})`} fill={metricColors.b2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
                 )}
                 {visibleMetrics.includes("c1_total") && (
-                  <Bar dataKey="c1_total" name={`${getMetricLabel("C1")} (Test Questions = ${getSampleCount("C1", filters.testCategory)})`} fill={metricColors.c1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                  <Bar dataKey="c1_total" name={`${getMetricLabel("C1")} (No. of Test Questions = ${getSampleCount("C1", filters.testCategory)})`} fill={metricColors.c1_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
                 )}
                 {visibleMetrics.includes("c2_total") && (
-                  <Bar dataKey="c2_total" name={`${getMetricLabel("C2")} (Test Questions = ${getSampleCount("C2", filters.testCategory)})`} fill={metricColors.c2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
+                  <Bar dataKey="c2_total" name={`${getMetricLabel("C2")} (No. of Test Questions = ${getSampleCount("C2", filters.testCategory)})`} fill={metricColors.c2_total} radius={[3, 3, 0, 0]} maxBarSize={32} />
                 )}
               </>
             )}

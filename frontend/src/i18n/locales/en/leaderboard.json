@@ -4,7 +4,7 @@
   },
   "intro": {
     "paragraph1": "Large Language Models (LLMs) have reshaped the AI landscape in recent years. They are becoming omnipresent, being used by private users and companies alike. However, LLMs are developed mainly for widespread languages such as English, Spanish, or German, leaving languages such as Luxembourgish on the sidelines.",
-    "paragraph2": "In this project, we aimed to test the linguistic capabilities of LLMs in Luxembourgish. In collaboration with the Institut National des Langues Luxembourg, we used language proficiency exams to evaluate the performance of 45 current-day LLMs."
+    "paragraph2": "In this project, we aimed to test the linguistic capabilities of LLMs in Luxembourgish. In collaboration with the Institut National des Langues Luxembourg (INLL) , we used language proficiency exams to evaluate the performance of 45 current-day LLMs."
   },
   "howItWorks": {
     "title": "How Does It Work?",
