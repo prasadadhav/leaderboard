@@ -30,7 +30,8 @@
     "requiredFields": "Wann ech gelift fëllt déi folgend Felder aus: {{fields}}",
     "saveFailed": "Späicheren ass feelgeschloen. Iwwerpréift Ären Input.",
     "updateFailed": "Aktualiséieren ass feelgeschloen. Iwwerpréift Ären Input.",
-    "networkError": "Netzwierkfehler. Versicht nach eng Kéier."
+    "networkError": "Netzwierkfehler. Versicht nach eng Kéier.",
+    "resetFilters": "Filter zrécksetzen"
   },
   "filter": {
     "buttonTitle": "Kolonn filteren",

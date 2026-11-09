@@ -30,7 +30,8 @@
     "requiredFields": "Bitte füllen Sie die folgenden Pflichtfelder aus: {{fields}}",
     "saveFailed": "Speichern fehlgeschlagen. Bitte überprüfen Sie Ihre Eingabe.",
     "updateFailed": "Aktualisierung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingabe.",
-    "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut."
+    "networkError": "Netzwerkfehler. Bitte versuchen Sie es erneut.",
+    "resetFilters": "Filter zurücksetzen"
   },
   "filter": {
     "buttonTitle": "Spalte filtern",

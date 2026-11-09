@@ -217,6 +217,7 @@ const Home: React.FC = () => {
               { label: "C1_total", column_type: "field", field: "c1_total", type: "number", required: false },
               { label: "C2_total", column_type: "field", field: "c2_total", type: "number", required: false },
             ],
+            defaultSort: { field: "c2_total", direction: "desc" },
           }}
           dataBinding={{ entity: "Model", endpoint: "/model/leaderboard" }}
         />

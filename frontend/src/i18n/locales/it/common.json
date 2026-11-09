@@ -30,7 +30,8 @@
     "requiredFields": "Si prega di compilare i seguenti campi obbligatori: {{fields}}",
     "saveFailed": "Salvataggio non riuscito. Verifica i dati inseriti.",
     "updateFailed": "Aggiornamento non riuscito. Verifica i dati inseriti.",
-    "networkError": "Errore di rete. Riprova."
+    "networkError": "Errore di rete. Riprova.",
+    "resetFilters": "Ripristina filtri"
   },
   "filter": {
     "buttonTitle": "Filtra colonna",

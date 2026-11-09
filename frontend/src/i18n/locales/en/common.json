@@ -30,7 +30,8 @@
     "requiredFields": "Please fill in the following required fields: {{fields}}",
     "saveFailed": "Failed to save. Please check your input.",
     "updateFailed": "Failed to update. Please check your input.",
-    "networkError": "Network error. Please try again."
+    "networkError": "Network error. Please try again.",
+    "resetFilters": "Reset Filters"
   },
   "filter": {
     "buttonTitle": "Filter column",

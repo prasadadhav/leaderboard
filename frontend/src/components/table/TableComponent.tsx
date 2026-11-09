@@ -29,6 +29,7 @@ interface TableOptions {
   columns?: Array<{ field: string; label?: string; type?: string; column_type?: string; path?: string } | string>;
   formColumns?: Array<{ field: string; label?: string; type?: string; column_type?: string; path?: string; lookup_field?: string; lookupField?: string } | string>;
   form_columns?: Array<{ field: string; label?: string; type?: string; column_type?: string; path?: string; lookup_field?: string; lookupField?: string } | string>;
+  defaultSort?: { field: string; direction: "asc" | "desc" };
 }
 
 interface Props {
@@ -89,7 +90,10 @@ export const TableComponent: React.FC<Props> = ({
   const { setSelectedRow, registerTableRefresh } = useTableContext();
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
-  const [sortConfig, setSortConfig] = useState<{ field: string; direction: 'asc' | 'desc' } | null>(null);
+  const defaultSortConfig = options?.defaultSort
+    ? { field: options.defaultSort.field, direction: options.defaultSort.direction }
+    : null;
+  const [sortConfig, setSortConfig] = useState<{ field: string; direction: 'asc' | 'desc' } | null>(defaultSortConfig);
 
   // Fetch table data from backend
   const fetchTableData = async () => {
@@ -148,6 +152,8 @@ export const TableComponent: React.FC<Props> = ({
     rowsPerPage: options?.rowsPerPage ?? 5,
     columns: options?.columns ?? [],
     formColumns: (options as any)?.formColumns ?? (options as any)?.form_columns ?? [],
+    form_columns: (options as any)?.form_columns ?? [],
+    defaultSort: options?.defaultSort as any,
     actionButtons: (options as any)?.actionButtons ?? (options as any)?.["action-buttons"] ?? false,
   };
 
@@ -372,6 +378,19 @@ export const TableComponent: React.FC<Props> = ({
     });
   };
 
+  const hasActiveFilters =
+    Object.keys(columnFilters).length > 0 ||
+    (sortConfig !== null &&
+      (defaultSortConfig === null ||
+        sortConfig.field !== defaultSortConfig.field ||
+        sortConfig.direction !== defaultSortConfig.direction));
+
+  const handleResetFilters = () => {
+    setColumnFilters({});
+    setSortConfig(defaultSortConfig);
+    setCurrentPage(1);
+  };
+
   // Apply sorting after filtering
   const sortedAndFilteredRows = useMemo(() => {
     if (!sortConfig) {
@@ -583,9 +602,44 @@ export const TableComponent: React.FC<Props> = ({
 
   return (
     <div id={id} style={containerStyle} className="table-wrapper">
-      {title && (
-        <h3 style={{ margin: 0, color: colors.textPrimary, fontSize: "18px", fontWeight: 700, letterSpacing: "-0.01em" }}>{title}</h3>
-      )}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", minHeight: title ? undefined : 0 }}>
+        {title && (
+          <h3 style={{ margin: 0, color: colors.textPrimary, fontSize: "18px", fontWeight: 700, letterSpacing: "-0.01em" }}>{title}</h3>
+        )}
+        {!title && <div />}
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={handleResetFilters}
+            style={{
+              height: "32px",
+              padding: "0 14px",
+              fontSize: "12px",
+              fontWeight: 600,
+              color: colors.textMuted,
+              backgroundColor: "transparent",
+              border: `1px solid ${colors.border}`,
+              borderRadius: "6px",
+              cursor: "pointer",
+              letterSpacing: "0.03em",
+              transition: "color 0.15s, background-color 0.15s, border-color 0.15s",
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = colors.hoverBg;
+              e.currentTarget.style.borderColor = colors.borderStrong;
+              e.currentTarget.style.color = colors.textPrimary;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.borderColor = colors.border;
+              e.currentTarget.style.color = colors.textMuted;
+            }}
+          >
+            {t("table.resetFilters")}
+          </button>
+        )}
+      </div>
 
       {/* Action Buttons above table */}
       {resolvedOptions.actionButtons && (

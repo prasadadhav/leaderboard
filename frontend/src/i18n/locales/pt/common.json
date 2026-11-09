@@ -30,7 +30,8 @@
     "requiredFields": "Por favor, preencha os seguintes campos obrigatórios: {{fields}}",
     "saveFailed": "Falha ao salvar. Por favor, verifique os dados inseridos.",
     "updateFailed": "Falha ao atualizar. Por favor, verifique os dados inseridos.",
-    "networkError": "Erro de rede. Por favor, tente novamente."
+    "networkError": "Erro de rede. Por favor, tente novamente.",
+    "resetFilters": "Redefinir filtros"
   },
   "filter": {
     "buttonTitle": "Filtrar coluna",
