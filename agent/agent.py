@@ -1083,4 +1083,6 @@ out_of_scope_state.set_body(out_of_scope_body)
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
+    from http_wrapper import start_http_bridge
+    start_http_bridge()
     agent.run()

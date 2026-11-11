@@ -34,6 +34,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8765:8765"
+      - "8766:8766"
     env_file:
       - ./agent/.env          # loads LETZEVAL_LLM_PROVIDER, OPENAI_API_KEY, etc.
     environment:
